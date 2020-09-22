@@ -87,6 +87,7 @@ public class Data {
     public int getPoptavka(int supermarket, int den, int druhZbozi) throws IllegalArgumentException {
 
         // test;
+        // test2
         return poptavkaZbozi[0];
     }
 
