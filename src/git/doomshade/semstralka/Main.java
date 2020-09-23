@@ -1,5 +1,8 @@
 package git.doomshade.semstralka;
 
+import git.doomshade.semstralka.graph.MatrixGraph;
+import git.doomshade.semstralka.graph.Storage;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,6 +11,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Spousteci trida
+ */
 public class Main {
 
     private static final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
@@ -17,15 +23,15 @@ public class Main {
         String fileName = "real_large.txt";
 
         long time = System.currentTimeMillis();
-        final Data data = read(new File(path, fileName));
+        final Storage data = read(new File(path, fileName));
 
         if (data != null) {
             System.out.println("Reading " + fileName + " took " + ((System.currentTimeMillis() - time) / 1000d) + "s to read");
-            System.out.println(data.getProdukce(1, 100, 2));
+            new MatrixGraph(data);
         }
     }
 
-    private static Data read(File file) throws IOException {
+    private static Storage read(File file) throws IOException {
         Scanner sc = new Scanner(file);
 
         // create a temp file with comments filtered out
@@ -40,6 +46,9 @@ public class Main {
                     out.println(s);
                 }
             }
+
+            // we stop reading from the file
+            sc.close();
         }
 
         // reassign the scanner
@@ -47,40 +56,44 @@ public class Main {
         final String blokPocet = sc.nextLine();
         final Matcher m = POCET_PATTERN.matcher(blokPocet);
 
-        // wrong header
+        // wrong header, return null
         if (!m.find()) return null;
 
-        short d = Short.parseShort(m.group(1));
-        short s = Short.parseShort(m.group(2));
-        short z = Short.parseShort(m.group(3));
-        short t = Short.parseShort(m.group(4));
+        // the data is likely readable, continue
+        short pocetTovaren = Short.parseShort(m.group(1));
+        short pocetSupermarketu = Short.parseShort(m.group(2));
+        short pocetDruhuZbozi = Short.parseShort(m.group(3));
+        short pocetDni = Short.parseShort(m.group(4));
 
 
-        short[] cenaPrevozu = new short[d * s];
-        short[] pocatecniZasoby = new short[z * s];
-        short[] produkceTovaren = new short[d * z * t];
-        short[] poptavkaZbozi = new short[s * z * t];
+        // initialize one dimensional arrays
+        // we will convert these into matrixes later on
+        short[] cenaPrevozu = new short[pocetTovaren * pocetSupermarketu];
+        short[] pocatecniZasoby = new short[pocetDruhuZbozi * pocetSupermarketu];
+        short[] produkceTovaren = new short[pocetTovaren * pocetDruhuZbozi * pocetDni];
+        short[] poptavkaZbozi = new short[pocetSupermarketu * pocetDruhuZbozi * pocetDni];
 
-        for (int i = 0; i < d * s; i++) {
+        // pretty straight forward reading to an array
+        for (int i = 0; i < pocetTovaren * pocetSupermarketu; i++) {
             cenaPrevozu[i] = sc.nextShort();
 
         }
 
-        for (int i = 0; i < z * s; i++) {
+        for (int i = 0; i < pocetDruhuZbozi * pocetSupermarketu; i++) {
             pocatecniZasoby[i] = sc.nextShort();
         }
 
-        for (int i = 0; i < d * z * t; i++) {
+        for (int i = 0; i < pocetTovaren * pocetDruhuZbozi * pocetDni; i++) {
             produkceTovaren[i] = sc.nextShort();
 
         }
 
-        for (int i = 0; i < s * z * t; i++) {
+        for (int i = 0; i < pocetSupermarketu * pocetDruhuZbozi * pocetDni; i++) {
             poptavkaZbozi[i] = sc.nextShort();
 
         }
 
-        return new Data(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, d, s, z, t);
+        return new Storage(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni);
     }
 
     /*
