@@ -1,4 +1,4 @@
-package git.doomshade.semstralka.graph.search;
+package git.doomshade.semstralka.impl.graph.search;
 
 public class Search {
 

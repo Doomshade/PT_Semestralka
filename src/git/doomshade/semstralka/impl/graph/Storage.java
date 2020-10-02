@@ -1,4 +1,4 @@
-package git.doomshade.semstralka.graph;
+package git.doomshade.semstralka.impl.graph;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -11,15 +11,27 @@ public class Storage {
 
 
     /**
-     * Pole dat, postaci short (setrime pamet)
+     * Pole dat, postačí short
      */
     private final short[] cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi;
 
     /**
-     * Velikost pole dat, postaci short (setrime pamet)
+     * Velikost pole dat, postačí short
      */
     public final short pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni;
 
+    /**
+     * Hlavní konstruktor pro uschování pole dat
+     *
+     * @param cenaPrevozu       cena provozu
+     * @param pocatecniZasoby   počáteční zásoby
+     * @param produkceTovaren   produkce továren
+     * @param poptavkaZbozi     poptávka zboží
+     * @param pocetTovaren      počet továren
+     * @param pocetSupermarketu počet supermarketů
+     * @param pocetDruhuZbozi   počet druhů zboží
+     * @param pocetDni          počet dní
+     */
     public Storage(short[] cenaPrevozu, short[] pocatecniZasoby, short[] produkceTovaren, short[] poptavkaZbozi, short pocetTovaren, short pocetSupermarketu, short pocetDruhuZbozi, short pocetDni) {
         this.cenaPrevozu = cenaPrevozu;
         this.pocatecniZasoby = pocatecniZasoby;
@@ -32,11 +44,11 @@ public class Storage {
     }
 
     /**
-     * Validuje input (neni pravdepodobne nutny, ale just to make sure)
+     * Validuje input (není pravděpodobně nutný, ale just to make sure)
      *
      * @param fieldName s jakym variablem to porovnat (pointery pls :( ) (dny, druhy zbozi, produkce, poptavka)
-     * @param num       cislo
-     * @throws IllegalArgumentException pokud je cislo vetsi nez pocet (dnu, druhu zbozi, ...)
+     * @param num       číslo, které má porovnat
+     * @throws IllegalArgumentException pokud je číslo větší než počet (dnů, druhu zbozi, ...)
      */
     private void validate(String fieldName, Number num) throws IllegalArgumentException {
         short fieldValue;
@@ -51,13 +63,14 @@ public class Storage {
         }
         final short val = num.shortValue();
         if (val > fieldValue) {
-            throw new IllegalArgumentException(String.format("%s (%d) je prilis velke (max = %d)", fieldName, val, fieldValue));
+            throw new IllegalArgumentException(String.format("%s (%d) je příliš velké (max = %d)", fieldName, val, fieldValue));
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Likely not needed methods (might be quality of life)
     ///////////////////////////////////////////////////////////////////////////
+
     /**
      * @param supermarket supermarket
      * @param tovarna     tovarna
