@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -35,7 +37,7 @@ public class Main {
      * @throws IOException pokud nastane chyba při čtení souboru
      */
     public static void main(String[] args) throws IOException {
-        String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT";
+        String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests";
         String fileName = "real_large.txt";
 
         //testRead(path, fileName);
@@ -126,9 +128,11 @@ public class Main {
     }
 
     private static Storage read(File file) throws IOException {
+        int index = 0;
         Scanner sc = new Scanner(file);
 
         // vytvoříme temp file s vyfiltrovanými komenty
+        List<String> list = new ArrayList<>();
         final File tempFile = Files.createTempFile("temp", "txt").toFile();
 
         try (final PrintWriter out = new PrintWriter(tempFile)) {
@@ -138,6 +142,7 @@ public class Main {
                 // vyfiltrujeme prázdné řetězce a komenty
                 if (!s.isEmpty() && !s.startsWith("#")) {
                     out.println(s);
+                    list.add(s);
                 }
             }
 
@@ -147,7 +152,7 @@ public class Main {
 
         // nastavíme scanner na temp file a čteme
         sc = new Scanner(tempFile);
-        final String blokPocet = sc.nextLine();
+        final String blokPocet = list.get(index++);
 
         final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
         final Matcher m = POCET_PATTERN.matcher(blokPocet);
