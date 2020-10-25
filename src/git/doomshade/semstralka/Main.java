@@ -1,17 +1,17 @@
 package git.doomshade.semstralka;
 
-import git.doomshade.semstralka.adt.Edge;
+import git.doomshade.semstralka.doomshade.MatrixUtil;
 import git.doomshade.semstralka.impl.graph.Graph;
 import git.doomshade.semstralka.impl.graph.Storage;
-import git.doomshade.semstralka.impl.graph.linked.LinkedListGraph;
 import git.doomshade.semstralka.impl.graph.matrix.IncidentialMatrixGraph;
-import git.doomshade.semstralka.impl.graph.matrix.MatrixGraph;
 import git.doomshade.semstralka.impl.graph.matrix.NeighbouringMatrixGraph;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -35,11 +35,10 @@ public class Main {
      * @throws IOException pokud nastane chyba při čtení souboru
      */
     public static void main(String[] args) throws IOException {
-        String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT";
+        String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests";
         String fileName = "real_large.txt";
-
         //testRead(path, fileName);
-        testGraph(1, 20, graph -> {
+        /*testGraph(1, 20, graph -> {
             graph.addEdge(new Edge(0, 5, -1));
             graph.addEdge(new Edge(0, 15, 8));
             graph.addEdge(new Edge(0, 2, 12));
@@ -60,7 +59,7 @@ public class Main {
             } else {
                 graph.print(System.out);
             }
-        });
+        });*/
     }
 
     /**
@@ -84,10 +83,8 @@ public class Main {
      * Testovací metoda pro implementace grafů
      *
      * @param graphType <ul>
-     *                  <li>0 = Orientovaný {@link LinkedListGraph}</li>
      *                  <li>1 = Orientovaný {@link NeighbouringMatrixGraph}</li>
      *                  <li>2 = Orientovaný {@link IncidentialMatrixGraph}</li>
-     *                  <li>3 = Neorientovaný {@link LinkedListGraph}</li>
      *                  <li>4 = Neorientovaný {@link NeighbouringMatrixGraph}</li>
      *                  <li>5 = Neorientovaný {@link IncidentialMatrixGraph}</li>
      *                  </ul>
@@ -104,9 +101,6 @@ public class Main {
             case 4:
                 graph = new NeighbouringMatrixGraph(false);
                 break;
-            case 3:
-                graph = new LinkedListGraph(false);
-                break;
             case 2:
                 graph = new IncidentialMatrixGraph(true);
                 break;
@@ -114,8 +108,7 @@ public class Main {
                 graph = new NeighbouringMatrixGraph(true);
                 break;
             case 0:
-                graph = new LinkedListGraph(true);
-                break;
+                //graph = new LinkedListGraph(true);
             default:
                 throw new RuntimeException("Invalidní typ grafu");
         }
@@ -125,10 +118,12 @@ public class Main {
         consumer.accept(graph);
     }
 
-    private static Storage read(File file) throws IOException {
+    public static Storage read(File file) throws IOException {
+        int index = 0;
         Scanner sc = new Scanner(file);
 
         // vytvoříme temp file s vyfiltrovanými komenty
+        List<String> list = new ArrayList<>();
         final File tempFile = Files.createTempFile("temp", "txt").toFile();
 
         try (final PrintWriter out = new PrintWriter(tempFile)) {
@@ -138,6 +133,7 @@ public class Main {
                 // vyfiltrujeme prázdné řetězce a komenty
                 if (!s.isEmpty() && !s.startsWith("#")) {
                     out.println(s);
+                    list.add(s);
                 }
             }
 
@@ -147,7 +143,7 @@ public class Main {
 
         // nastavíme scanner na temp file a čteme
         sc = new Scanner(tempFile);
-        final String blokPocet = sc.nextLine();
+        final String blokPocet = list.get(index++);
 
         final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
         final Matcher m = POCET_PATTERN.matcher(blokPocet);
@@ -158,10 +154,10 @@ public class Main {
         }
 
         // data se dají přečíst, pokračujeme
-        short pocetTovaren = Short.parseShort(m.group(1));
-        short pocetSupermarketu = Short.parseShort(m.group(2));
-        short pocetDruhuZbozi = Short.parseShort(m.group(3));
-        short pocetDni = Short.parseShort(m.group(4));
+        short pocetTovaren = sc.nextShort();
+        short pocetSupermarketu = sc.nextShort();
+        short pocetDruhuZbozi = sc.nextShort();
+        short pocetDni = sc.nextShort();
 
 
         // nainicializujeme do pole
