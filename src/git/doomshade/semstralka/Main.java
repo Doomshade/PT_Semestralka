@@ -156,6 +156,7 @@ public class Main {
         }
 
         // data se dají přečíst, pokračujeme
+        // TEST pro martina
         short pocetTovaren = sc.nextShort();
         short pocetSupermarketu = sc.nextShort();
         short pocetDruhuZbozi = sc.nextShort();
@@ -189,6 +190,9 @@ public class Main {
             poptavkaZbozi[i] = sc.nextShort();
         }
 
+        if (sc.hasNext()) {
+            throw new RuntimeException("Did not read all FFS");
+        }
 
         return new Storage(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni);
     }
