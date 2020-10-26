@@ -35,7 +35,6 @@ public abstract class Graph implements IGraph {
      * @param out kam vypsat graf
      */
     public void print(PrintStream out) {
-
     }
 
     /*
