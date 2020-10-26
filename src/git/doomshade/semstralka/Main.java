@@ -1,6 +1,5 @@
 package git.doomshade.semstralka;
 
-import git.doomshade.semstralka.doomshade.MatrixUtil;
 import git.doomshade.semstralka.impl.graph.Graph;
 import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.impl.graph.matrix.IncidentialMatrixGraph;
@@ -19,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Spouštěcí třídad
+ * Spouštěcí třída
  */
 public class Main {
 
@@ -142,10 +141,12 @@ public class Main {
             sc.close();
         }
 
+        // TODO konvertovat do linkedlistu (nebo nějaký queue) a pak číst tam odsud
         // nastavíme scanner na temp file a čteme
         sc = new Scanner(tempFile);
         final String blokPocet = list.get(index++);
 
+        // pattern byl puvodne pro pocetTovaren apod.
         final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
         final Matcher m = POCET_PATTERN.matcher(blokPocet);
 
@@ -155,10 +156,10 @@ public class Main {
         }
 
         // data se dají přečíst, pokračujeme
-        short pocetTovaren = Short.parseShort(m.group(1));
-        short pocetSupermarketu = Short.parseShort(m.group(2));
-        short pocetDruhuZbozi = Short.parseShort(m.group(3));
-        short pocetDni = Short.parseShort(m.group(4));
+        short pocetTovaren = sc.nextShort();
+        short pocetSupermarketu = sc.nextShort();
+        short pocetDruhuZbozi = sc.nextShort();
+        short pocetDni = sc.nextShort();
 
 
         // nainicializujeme do pole
