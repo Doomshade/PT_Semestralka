@@ -120,6 +120,7 @@ public class Main {
 
     public static Storage read(File file) throws IOException {
         int index = 0;
+
         Scanner sc = new Scanner(file);
 
         // vytvoříme temp file s vyfiltrovanými komenty
@@ -141,10 +142,12 @@ public class Main {
             sc.close();
         }
 
+        // TODO konvertovat do linkedlistu (nebo nějaký queue) a pak číst tam odsud
         // nastavíme scanner na temp file a čteme
         sc = new Scanner(tempFile);
         final String blokPocet = list.get(index++);
 
+        // pattern byl puvodne pro pocetTovaren apod.
         final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
         final Matcher m = POCET_PATTERN.matcher(blokPocet);
 
