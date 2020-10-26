@@ -14,7 +14,14 @@ public class SolutionTest {
     //private static final Collection<short[][]> matrixes = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
+
         Storage read = Main.read(new File("C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\real_small.txt"));
+        test(read);
+    }
+
+    private static void test(Storage read) throws IOException {
+        long time = System.currentTimeMillis();
+        System.out.println(System.currentTimeMillis() - time);
         final int y = read.pocetSupermarketu;
         final int x = read.pocetTovaren;
 
@@ -25,27 +32,27 @@ public class SolutionTest {
             }
         }
 
-        /*
+
         for (short[] shorts : matrix) {
             System.out.println(Arrays.toString(shorts));
         }
 
-        System.out.println();*/
+        System.out.println();
         final short[] supply = Arrays.copyOf(read.getData().produkceTovaren, read.pocetTovaren);
         final short[] demand = Arrays.copyOf(read.getData().poptavkaZbozi, read.pocetSupermarketu);
 
 
-        /*System.out.println(Arrays.toString(supply));
-        System.out.println(Arrays.toString(demand));*/
+        System.out.println(Arrays.toString(supply));
+        System.out.println(Arrays.toString(demand));
 
-        /*
+
         int[] cpy = new int[demand.length];
 
         for (int i = 0; i < demand.length; i++) {
             cpy[i] = demand[i];
         }
 
-        System.out.println(Arrays.stream(cpy).sum());*/
+        System.out.println(Arrays.stream(cpy).sum());
 
         final Solution solution = new Solution(
                 matrix,
