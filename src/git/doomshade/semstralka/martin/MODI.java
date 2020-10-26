@@ -24,7 +24,7 @@ public class MODI {
      *        - - - -
      *        20 30 50 50
      */
-    final int[][] arcMatrix;
+    final double[][] arcMatrix;
     /**
      * Matic cen převozu mezi S a D
      *          4 6 8 8
@@ -43,7 +43,7 @@ public class MODI {
      * @param arcMatrix matice hran, reprezentující 1 realizovatelné řešení (tj. správné řešení, ale ne optimální)
      * @param costMatrix matice cen převozu
      */
-    public MODI(int[][] arcMatrix, int[][] costMatrix) {
+    public MODI(double[][] arcMatrix, int[][] costMatrix) {
         this.arcMatrix = arcMatrix;
         this.costMatrix = costMatrix;
 
@@ -93,26 +93,25 @@ public class MODI {
     private boolean calculateUVs() {
         boolean impossible = false;
         while(!allUVsSet()) {
+            if (impossible)
+                return false;
             for (int[] arc : allocated) {
-                if (impossible)
-                    return false;
                 int xCoord = arc[0];
                 int yCoord = arc[1];
                 // zjisti zda známe alespoň jednu proměnnou
                 if (u[yCoord] == Double.POSITIVE_INFINITY && v[xCoord] == Double.POSITIVE_INFINITY)
-                    continue;
-                if (u[yCoord] != Double.POSITIVE_INFINITY) {
+                    impossible = true;
+                if (u[yCoord] != Double.POSITIVE_INFINITY && v[xCoord] == Double.POSITIVE_INFINITY) {
                     // známe u[y]
                     v[xCoord] = costMatrix[yCoord][xCoord] - u[yCoord];
                     impossible = false;
                     continue;
                 }
-                if (v[xCoord] != Double.POSITIVE_INFINITY) {
+                if (v[xCoord] != Double.POSITIVE_INFINITY && u[yCoord] == Double.POSITIVE_INFINITY) {
                     u[yCoord] = costMatrix[yCoord][xCoord] - v[xCoord];
                     impossible = false;
                     continue;
                 }
-                impossible = true;
             }
         }
         return true;
@@ -196,8 +195,8 @@ public class MODI {
      *
      * @return list [pozice x, pozice y, přeprava]
      */
-    private List<int[]> findCycleValues(int x, int y) {
-        int value = arcMatrix[y][x];
+    private List<double[]> findCycleValues(int x, int y) {
+        double value = arcMatrix[y][x];
         arcMatrix[y][x] = 1; // nic tam nebude, takže si tam bez problému přidáme 0
 
         CycleDetection cd = new CycleDetection(arcMatrix);
@@ -207,13 +206,13 @@ public class MODI {
         // než něco začneme dělat vrátíme "arcMatrix" doi původního stavu
         arcMatrix[y][x] = value;
         // teď se můžeme zabývat cyklem
-        ArrayList<int[]> cycleValues = new ArrayList<>();
+        ArrayList<double[]> cycleValues = new ArrayList<>();
         for (int i = 0; i < cycle.size(); i++) {
             int xPos = cycle.get(i)[0];
             int yPos = cycle.get(i)[1];
 
             int neg = (i % 2 == 0) ? 1 : -1;
-            cycleValues.add(new int[] {xPos, yPos, arcMatrix[yPos][xPos] * neg});
+            cycleValues.add(new double[] {xPos, yPos, arcMatrix[yPos][xPos] * neg});
         }
 
         return cycleValues;
@@ -224,24 +223,118 @@ public class MODI {
      *
      * @param cycleValues hodnoty cyklu a pozice cyklu
      */
-    private void generateNewSolution(List<int[]> cycleValues) {
+    private void generateNewSolution(List<double[]> cycleValues) {
+        // flags
+        boolean negativeEpsilon = false;
+
         // najdi mi theta číslo (maximální číslo co mohu odečít ze všech záporných prvků cyklu, tak abych nepřepravoval záporné množství prvků)
-        int theta = cycleValues.get(1)[2]; // vezmeme lichá čísla (jsou VŽDY záporná)
-        for (int[] val : cycleValues) {
+        double theta = cycleValues.get(1)[2]; // vezmeme lichá čísla (jsou VŽDY záporná)
+        for (double[] val : cycleValues) {
+            if (val[2] == Double.NEGATIVE_INFINITY) {
+                negativeEpsilon = true;
+                break;
+            }
+
             if (val[2] < 0 && val[2] > theta)
                 theta = val[2];
         }
-        // karanténa --
-        theta *= -1; // theta musí být pozitivní :(
-        // karanténa --
-        // máme theta -> teď přičti nebo odečti theta od všech prvků cyklu
-        for (int i = 0; i < cycleValues.size(); i++) {
-            int x = cycleValues.get(i)[0];
-            int y = cycleValues.get(i)[1];
-            int value = cycleValues.get(i)[2];
+        if (!negativeEpsilon) {
+            // karanténa --
+            theta *= -1; // theta musí být pozitivní :(
+            // karanténa --
+            // máme theta -> teď přičti nebo odečti theta od všech prvků cyklu
+            for (double[] val : cycleValues) {
+                if (val[2] == Double.POSITIVE_INFINITY) {
+                    int xPos = (int) val[0];
+                    int yPos = (int) val[1];
+                    arcMatrix[yPos][xPos] = 0;
+                }
+            }
 
-            int mul = (i%2==0) ? 1 : -1;
-            arcMatrix[y][x] += theta * mul;
+            for (int i = 0; i < cycleValues.size(); i++) {
+                int x = (int) cycleValues.get(i)[0];
+                int y = (int) cycleValues.get(i)[1];
+
+                int mul = (i % 2 == 0) ? 1 : -1;
+                arcMatrix[y][x] += theta * mul;
+            }
+        }
+        else {
+            int xStart = (int) cycleValues.get(0)[0];
+            int yStart = (int) cycleValues.get(0)[1];
+            arcMatrix[yStart][xStart] = Double.POSITIVE_INFINITY;
+            for (double[] val : cycleValues) {
+                if (val[2] == Double.NEGATIVE_INFINITY) {
+                    int xPos = (int) val[0];
+                    int yPos = (int) val[1];
+                    arcMatrix[yPos][xPos] = 0;
+                }
+            }
+        }
+    }
+
+    //-- pro degenerative solution (tj. máme < m+n-1 přiřazených hran)
+
+    private boolean calculateEpsilons() {
+        ArrayList<Integer> unalocatedUs = new ArrayList<>();
+        // najdi nepřiřazená u -> tedy u == Inf
+        for (int i = 0; i < u.length; i++) {
+            if (u[i] == Double.POSITIVE_INFINITY)
+                unalocatedUs.add(i);
+        }
+
+        // projdi všechny řádky s nepřiřazenými u a přiřaď epsilon tak aby nevznikal cyklus
+        ArrayList<int[]> bannedPos = new ArrayList<>();
+        CycleDetection cd = new CycleDetection(arcMatrix);
+        int epsilons = 0;
+        while (true) {
+            // zkus každému u přiřadit epsilon, tak aby nevznikal cyklus
+            for (int index : unalocatedUs) {
+                int banCount = 0;
+                for (int x = 0; x < arcMatrix[0].length; x++) {
+                    boolean banned = false;
+                    // jedná se o ilegální pozici ?
+                    for (int[] ban : bannedPos) {
+                        if (x == ban[0] && index == ban[1]) {
+                            banned = true;
+                            ++banCount;
+                        }
+                    }
+                    if (banCount == arcMatrix[0].length)
+                        return false;
+                    if (banned)
+                        continue;
+
+                    //pokud není již na pozici jiné číslo, zkus tam dát epsilon
+                    if (arcMatrix[index][x] != 0)
+                        continue;
+                    //zkus přiřadit epsilon
+                    double value = arcMatrix[index][x];
+                    arcMatrix[index][x] = Double.POSITIVE_INFINITY;
+                    if (cd.detectCycle(x, index) != null) {
+                        // detekoval jsem cyklus
+                        bannedPos.add(new int[] {x, index});
+                        arcMatrix[index][x] = value;
+                        continue;
+                    }
+                    //uspěšně si přiřadil epsilon
+                    ++epsilons;
+                    break;
+                }
+            }
+
+            if (epsilons == unalocatedUs.size())
+                return true;
+
+            // nenašel jsi všechna epsilon
+            // resetuj epsilon
+            epsilons = 0;
+            for (int index : unalocatedUs) {
+                for (int x = 0; x < arcMatrix[0].length; x++) {
+                    if (arcMatrix[index][x] == Double.POSITIVE_INFINITY)
+                        arcMatrix[index][x] = 0;
+                }
+            }
         }
     }
 
@@ -250,15 +343,31 @@ public class MODI {
             initUV(); // prvně resetujeme u a v
             getAllocations(); // rozděl graf na allocated a unallocated části
             if (!calculateUVs()) {
-                // degenerativní řešení...
-                // TODO implementuj
-                return false;
+                // degenerativní řešení
+                if (!calculateEpsilons())
+                    return false; //NEMOHL JSEM NENAJÍT ŘEŠENÍ BEZ CYKLU -> nemohu provést algoritmus
+                getAllocations(); // restartuj alokace
+                if (!calculateUVs())
+                    return false; // FATAL ERROR -> tohle snad ani nemůže nastat
+
+                /*
+                for (int y = 0; y < 3; y++) {
+                    for (int x = 0; x < 4; x++) {
+                        if (arcMatrix[y][x] == Double.POSITIVE_INFINITY) {
+                            System.out.print("E ");
+                            continue;
+                        }
+                        System.out.print(arcMatrix[y][x] + " ");
+                    }
+                    System.out.println();
+                }
+                 */
             }
             int[] netIncrease = calculateNetIncrease(); // najdi Net Increasu
             if (!existNegNetIncrease(netIncrease))
                 return true;
             int[] coordOfMin = findLargestNegativeIncrease(netIncrease); // najdi souřadnice nejmenšího Net Increasu
-            ArrayList<int[]> cycle = (ArrayList<int[]>) findCycleValues(coordOfMin[0], coordOfMin[1]); // najdi cyklus a jeho hodnoty
+            ArrayList<double[]> cycle = (ArrayList<double[]>) findCycleValues(coordOfMin[0], coordOfMin[1]); // najdi cyklus a jeho hodnoty
             if (cycle == null) {
                 // nelze najit řešení ? Může tato situace vůbec nastat ?
                 // každopádně algoritmus selhal

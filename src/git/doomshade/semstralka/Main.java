@@ -1,11 +1,9 @@
 package git.doomshade.semstralka;
 
-import git.doomshade.semstralka.adt.Edge;
+import git.doomshade.semstralka.doomshade.MatrixUtil;
 import git.doomshade.semstralka.impl.graph.Graph;
 import git.doomshade.semstralka.impl.graph.Storage;
-import git.doomshade.semstralka.impl.graph.linked.LinkedListGraph;
 import git.doomshade.semstralka.impl.graph.matrix.IncidentialMatrixGraph;
-import git.doomshade.semstralka.impl.graph.matrix.MatrixGraph;
 import git.doomshade.semstralka.impl.graph.matrix.NeighbouringMatrixGraph;
 
 import java.io.File;
@@ -21,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Spouštěcí třída
+ * Spouštěcí třídad
  */
 public class Main {
 
@@ -39,9 +37,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests";
         String fileName = "real_large.txt";
-
         //testRead(path, fileName);
-        testGraph(1, 20, graph -> {
+        /*testGraph(1, 20, graph -> {
             graph.addEdge(new Edge(0, 5, -1));
             graph.addEdge(new Edge(0, 15, 8));
             graph.addEdge(new Edge(0, 2, 12));
@@ -62,7 +59,7 @@ public class Main {
             } else {
                 graph.print(System.out);
             }
-        });
+        });*/
     }
 
     /**
@@ -86,10 +83,8 @@ public class Main {
      * Testovací metoda pro implementace grafů
      *
      * @param graphType <ul>
-     *                  <li>0 = Orientovaný {@link LinkedListGraph}</li>
      *                  <li>1 = Orientovaný {@link NeighbouringMatrixGraph}</li>
      *                  <li>2 = Orientovaný {@link IncidentialMatrixGraph}</li>
-     *                  <li>3 = Neorientovaný {@link LinkedListGraph}</li>
      *                  <li>4 = Neorientovaný {@link NeighbouringMatrixGraph}</li>
      *                  <li>5 = Neorientovaný {@link IncidentialMatrixGraph}</li>
      *                  </ul>
@@ -106,9 +101,6 @@ public class Main {
             case 4:
                 graph = new NeighbouringMatrixGraph(false);
                 break;
-            case 3:
-                graph = new LinkedListGraph(false);
-                break;
             case 2:
                 graph = new IncidentialMatrixGraph(true);
                 break;
@@ -116,8 +108,7 @@ public class Main {
                 graph = new NeighbouringMatrixGraph(true);
                 break;
             case 0:
-                graph = new LinkedListGraph(true);
-                break;
+                //graph = new LinkedListGraph(true);
             default:
                 throw new RuntimeException("Invalidní typ grafu");
         }
@@ -127,8 +118,9 @@ public class Main {
         consumer.accept(graph);
     }
 
-    private static Storage read(File file) throws IOException {
+    public static Storage read(File file) throws IOException {
         int index = 0;
+
         Scanner sc = new Scanner(file);
 
         // vytvoříme temp file s vyfiltrovanými komenty

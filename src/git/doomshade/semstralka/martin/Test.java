@@ -1,8 +1,14 @@
 package git.doomshade.semstralka.martin;
 
+import git.doomshade.semstralka.Main;
+import git.doomshade.semstralka.impl.graph.Storage;
+
+import java.io.File;
+import java.io.IOException;
+
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         /*
         DetectCycle dc = new DetectCycle();
 
@@ -35,10 +41,11 @@ public class Test {
             System.out.print(num + " ");
         }
          */
-        int[][] arcMatrix = new int[][] {
-                new int[] {20,20,0,0},
-                new int[] {0,0,50,10},
-                new int[] {0,10,0,40}
+        /*
+        double[][] arcMatrix = new double[][] {
+                new double[] {20,20,0,0},
+                new double[] {0,10,50,0},
+                new double[] {0,0,0,50}
         };
         int[][] costMatrix = new int[][] {
                 new int[] {4,6,8,8},
@@ -46,7 +53,15 @@ public class Test {
                 new int[] {5,7,6,8}
         };
 
+
+
         MODI modi = new MODI(arcMatrix, costMatrix);
         modi.calculateMODI();
+
+         */
+
+        Storage buhvi = Main.read(new File("C:\\Users\\jakub\\Downloads\\pt_2020_2021_data\\test_price.txt"));
+        Simulation matrix = new Simulation(buhvi);
+        matrix.printCost1D();
     }
 }
