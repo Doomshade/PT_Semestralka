@@ -5,6 +5,7 @@ import git.doomshade.semstralka.impl.graph.Storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Test {
 
@@ -62,6 +63,17 @@ public class Test {
 
         Storage buhvi = Main.read(new File("C:\\Users\\jakub\\Downloads\\pt_2020_2021_data\\test_price.txt"));
         Simulation matrix = new Simulation(buhvi);
-        matrix.printCost1D();
+
+        System.out.printf("továrny:      %d \n" +
+                          "supermarkety: %d \n" +
+                          "zbozi:        %d \n" +
+                          "dny:          %d \n", matrix.storage.pocetTovaren, matrix.storage.pocetSupermarketu, matrix.storage.pocetDruhuZbozi, matrix.storage.pocetDni);
+        System.out.printf("zásoby:       %d \n" +
+                          "produkce:     %d \n" +
+                          "poptávka:     %d \n", matrix.totalStocks, matrix.totalProduction, matrix.totalDemand);
+
+        System.out.println("\n<------------------------------------->\n");
+
+        matrix.simulateNextDay();
     }
 }
