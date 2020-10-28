@@ -4,7 +4,10 @@ import java.util.List;
 
 /**
  * Rozhraní ADT Grafu
+ *
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public interface IGraph {
 
     /**

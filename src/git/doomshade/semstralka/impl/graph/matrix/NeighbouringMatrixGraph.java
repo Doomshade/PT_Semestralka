@@ -7,7 +7,10 @@ import java.util.List;
 
 /**
  * Implementace grafu maticí sousednosti
+ *
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public class NeighbouringMatrixGraph extends MatrixGraph {
 
     public NeighbouringMatrixGraph(boolean oriented, short invalidNumber) {

@@ -2,7 +2,10 @@ package git.doomshade.semstralka.adt;
 
 /**
  * Ohodnocená hrana mezi dvěma vrcholy
+ *
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public class Edge {
 
     // TODO the start attribute likely not needed

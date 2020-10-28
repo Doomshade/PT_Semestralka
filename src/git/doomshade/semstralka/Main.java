@@ -1,9 +1,6 @@
 package git.doomshade.semstralka;
 
-import git.doomshade.semstralka.impl.graph.Graph;
 import git.doomshade.semstralka.impl.graph.Storage;
-import git.doomshade.semstralka.impl.graph.matrix.IncidentialMatrixGraph;
-import git.doomshade.semstralka.impl.graph.matrix.NeighbouringMatrixGraph;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +9,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,45 +72,6 @@ public class Main {
 
         LOGGER.info("Reading " + fileName + " took " + (time / 1000d) + "s to read");
         return data;
-    }
-
-    /**
-     * Testovací metoda pro implementace grafů
-     *
-     * @param graphType <ul>
-     *                  <li>1 = Orientovaný {@link NeighbouringMatrixGraph}</li>
-     *                  <li>2 = Orientovaný {@link IncidentialMatrixGraph}</li>
-     *                  <li>4 = Neorientovaný {@link NeighbouringMatrixGraph}</li>
-     *                  <li>5 = Neorientovaný {@link IncidentialMatrixGraph}</li>
-     *                  </ul>
-     * @param size      velikost grafu
-     * @param consumer  co provést za akci s inicializovaným grafem
-     */
-    private static void testGraph(int graphType, int size, Consumer<Graph> consumer) {
-        final Graph graph;
-
-        switch (graphType) {
-            case 5:
-                graph = new IncidentialMatrixGraph(false);
-                break;
-            case 4:
-                graph = new NeighbouringMatrixGraph(false);
-                break;
-            case 2:
-                graph = new IncidentialMatrixGraph(true);
-                break;
-            case 1:
-                graph = new NeighbouringMatrixGraph(true);
-                break;
-            case 0:
-                //graph = new LinkedListGraph(true);
-            default:
-                throw new RuntimeException("Invalidní typ grafu");
-        }
-
-        graph.initializeGraph(size);
-
-        consumer.accept(graph);
     }
 
     public static Storage read(File file) throws IOException {

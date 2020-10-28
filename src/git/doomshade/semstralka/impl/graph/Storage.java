@@ -4,8 +4,11 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
- * Trida, ve ktere jsou reprezentovana data v jednodimenzionalnim poli. Data lze precist pomoci pomocnych get metod.
- * Zde se uschovaji veskera data nectena ze souboru, ktera se dale daji jednoduse predelat do jinych struktur.
+ * Třída, ve které jsou data reprezentována v jednodimenzionálním poli. Data lze přečíst pomocí pomocných get metod.
+ * Zde se uschovají veškerí data načtená ze souboru, která se dále dají jednoduše předělat do jiných struktur.
+ *
+ * @author Jakub Šmrha
+ * @version 1.0
  */
 public class Storage {
 

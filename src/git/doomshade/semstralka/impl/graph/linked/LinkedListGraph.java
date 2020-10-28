@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 
 /**
  * Seznamová implementace grafu
+ *
+ * @deprecated Nevyužije se
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class LinkedListGraph extends Graph {
     private LinkedList<Edge>[] list;
 

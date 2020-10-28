@@ -1,5 +1,9 @@
 package git.doomshade.semstralka.impl.graph.search;
 
+/**
+ * @deprecated Nevyužije se
+ */
+@Deprecated(forRemoval = true)
 public class Search {
 
     /*public static <T> T[] BFS(int s, Number[][] matrix, Function<Number, T> function) {

@@ -6,7 +6,11 @@ import java.io.PrintStream;
 
 /**
  * Základní implementace grafu
+ *
+ * @author Jakub Šmrha
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public abstract class Graph implements IGraph {
 
     /**

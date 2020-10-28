@@ -5,7 +5,9 @@ import git.doomshade.semstralka.adt.IValueHolder;
 /**
  * <p>>Implementace pro třídy, které drží určitou hodnotu ({@link Supermarket}, {@link Tovarna}
  * <p>Možná nebude třeba ani využít
+ * @deprecated určo se nevyužije
  */
+@Deprecated(forRemoval = true)
 abstract class ValueHolder implements IValueHolder {
     private final short value;
 

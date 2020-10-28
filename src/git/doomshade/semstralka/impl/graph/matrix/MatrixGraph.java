@@ -6,14 +6,16 @@ import java.io.PrintStream;
 
 /**
  * Maticová implementace grafu
+ *
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public abstract class MatrixGraph extends Graph {
 
     protected short[][] matrix;
     protected final short initNumber;
 
     /**
-     * <p>Detaily: {@link Graph#Graph(boolean)}
      * <p>Nainicializuje hodnoty matice na initNumber
      *
      * @param oriented   zda je graf orientovaný
@@ -25,7 +27,6 @@ public abstract class MatrixGraph extends Graph {
     }
 
     /**
-     * <p>Detaily: {@link Graph#Graph(boolean)}
      * <p>Na základě orientace nainicializuje hodnoty matice (orientovaný = -1, neorientovaný = 0)
      *
      * @param oriented zda je graf orientovaný

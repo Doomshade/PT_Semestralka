@@ -6,7 +6,10 @@ import java.util.List;
 
 /**
  * Implementace grafu incidenční maticí
+ *
+ * @deprecated Nevyužije se
  */
+@Deprecated(forRemoval = true)
 public class IncidentialMatrixGraph extends MatrixGraph {
 
     public IncidentialMatrixGraph(boolean oriented, short invalidNumber) {

@@ -7,7 +7,7 @@ import git.doomshade.semstralka.adt.IValueHolder;
  * @param <T>
  * @deprecated již není třeba, zatím to tu ale keepnu pro jistotu
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class Link<T extends Comparable<T>> {
     IValueHolder holder;
     T neighbour;
