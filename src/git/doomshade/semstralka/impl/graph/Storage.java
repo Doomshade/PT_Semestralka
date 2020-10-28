@@ -92,7 +92,9 @@ public class Storage {
     public int getZasoby(int druhZbozi, int supermarket) throws IllegalArgumentException {
         /*validate("pocetDruhuZbozi", druhZbozi);
         validate("pocetSupermarketu", supermarket);*/
-        return pocatecniZasoby[pocetDruhuZbozi * druhZbozi + supermarket];
+        //return pocatecniZasoby[pocetDruhuZbozi * druhZbozi + supermarket];
+        // bruh... cmon :D u can do better
+        return pocatecniZasoby[pocetSupermarketu * druhZbozi + supermarket];
     }
 
     /**
@@ -108,7 +110,8 @@ public class Storage {
         validate("pocetDni", den);*/
 
         // hopefully this is correct
-        return produkceTovaren[pocetDruhuZbozi * druhZbozi * pocetDni + pocetTovaren * den + tovarna];
+        //return produkceTovaren[pocetDruhuZbozi * druhZbozi * pocetDni + pocetTovaren * den + tovarna];
+        return produkceTovaren[(pocetTovaren * den + tovarna) + (pocetTovaren * pocetDni * druhZbozi)];
     }
 
     /**
@@ -125,7 +128,8 @@ public class Storage {
         validate("pocetDruhuZbozi", druhZbozi);*/
         // test;
         // test2
-        return poptavkaZbozi[0];
+        //return poptavkaZbozi[0];
+        return poptavkaZbozi[(pocetSupermarketu * den + supermarket) + (pocetSupermarketu * pocetDni * druhZbozi)];
     }
 
     /**

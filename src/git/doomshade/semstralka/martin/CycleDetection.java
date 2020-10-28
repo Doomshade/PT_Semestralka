@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class CycleDetection {
 
-    private final int[][] matrix;
+    private final double[][] matrix;
 
     /**
      * Vytvoří novou instanci třídy, určenou pro hledání v konkrétní matici zadané jako parametr
      *
      * @param matrix matice splňující náležitosti "transportation problem"
      */
-    public CycleDetection(int[][] matrix) {
+    public CycleDetection(double[][] matrix) {
         this.matrix = matrix;
     }
 
@@ -41,6 +41,8 @@ public class CycleDetection {
 
         List<int[]> cycle = checkArc(xCoord, yCoord, Move.VERTICAL);
         //Collections.reverse(cycle);
+        if (cycle == null)
+            return null;
         return cycle.size() < 4 ? null : cycle;
     }
 
