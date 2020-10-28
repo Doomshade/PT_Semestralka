@@ -19,7 +19,7 @@ public class NWSolution extends Solution {
     private void northWest(int x, int y) {
         // musime se kouknout, zda je x a y in bounds
         // pokud neni, tak nechceme delat nic
-        if (x >= matrix[0].length || y >= matrix.length) return;
+        if (x >= costMatrix[0].length || y >= costMatrix.length) return;
 
 
         /*

@@ -1,8 +1,6 @@
 package main.git.doomshade.semestralka.smrha;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author Jakub Šmrha
@@ -26,15 +24,56 @@ public class MinCostSolution extends Solution {
 
     @Override
     protected void solveProblem() {
+        minCost();
         /*final BiPredicate<Number, Number> predicate = (x, y) -> MatrixUtil.LOWEST_INTEGER.test(x, y) && supply[x.intValue()] != 0;
         final short search = MatrixUtil.search(matrix, predicate, MatrixUtil.LOWEST_NUMBER);
         System.out.println("MCS: " + search);*/
     }
 
-    private void minCost(int x, int y) {
+    private void minCost() {
         // musime se kouknout, zda je x a y in bounds
         // pokud neni, tak nechceme delat nic
-        if (x >= matrix[0].length || y >= matrix.length) return;
+
+        // vezmeme si první entry v mapě (je to sorted)
+        final Map.Entry<Short, Collection<Integer>> entry = SUPPLY_INDEX_MAP.pollFirstEntry();
+
+        // entry je prázdný, došli jsme pravědpodobně na konec
+        if (entry == null) return;
+
+        final Collection<Integer> coll = entry.getValue();
+        final Iterator<Integer> it = coll.iterator();
+
+        // pokud je iterátor for whatever reason prázdný, tak znovu voláme mincost
+        if (!it.hasNext()) {
+            minCost();
+            return;
+        }
+
+        final int len = costMatrix[0].length;
+        int idx, x, y;
+        while (true) {
+            idx = it.next();
+            x = idx % len;
+            y = idx / len;
+            it.remove();
+
+            int supply = this.supply[y];
+            int demand = this.demand[x];
+            if (supply != 0 && demand != 0) {
+                break;
+            }
+
+            // došli jsme na konec iterace, začneme od začátku
+            if (!it.hasNext()) {
+                minCost();
+                return;
+            }
+        }
+
+        // index jsme našli, pokud to nebyl poslední index, vrátíme zpět do mapy
+        if (!coll.isEmpty()) {
+            SUPPLY_INDEX_MAP.put(entry.getKey(), coll);
+        }
 
 
         /*
@@ -49,16 +88,11 @@ public class MinCostSolution extends Solution {
         }*/
 
         System.out.printf("Choosing from index {x=%d, y=%d}%n", x, y);
-        // z enum indexu ziskame deletedPart (row/column/both)
-
         DeletedPart deletedPart = choose(x, y);
         System.out.println("DeletedPart " + deletedPart);
         System.out.println("-----------------------------------------");
 
-        switch (deletedPart) {
-            case ROW -> minCost(x, y + 1);
-            case COLUMN -> minCost(x + 1, y);
-            case BOTH -> minCost(x + 1, y + 1);
-        }
+        // našel se index, jedeme dál
+        minCost();
     }
 }

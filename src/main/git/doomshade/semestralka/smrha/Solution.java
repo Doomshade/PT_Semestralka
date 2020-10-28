@@ -8,13 +8,17 @@ package main.git.doomshade.semestralka.smrha;
  */
 public abstract class Solution {
 
-    public final short[][] matrix;
+    public final short[][] costMatrix;
+
+    public final int[][] uplneJedno;
+
     public final short[] supply, demand;
 
     private int totalCost = 0;
 
-    public Solution(short[][] matrix, short[] supply, short[] demand) {
-        this.matrix = matrix;
+    public Solution(short[][] costMatrix, short[] supply, short[] demand) {
+        this.costMatrix = costMatrix;
+        this.uplneJedno = new int[costMatrix.length][costMatrix[0].length];
         this.supply = supply;
         this.demand = demand;
     }
@@ -34,7 +38,7 @@ public abstract class Solution {
     protected DeletedPart choose(int x, int y) {
 
         // cena cesty
-        final short cost = matrix[y][x];
+        final short cost = costMatrix[y][x];
 
         // zjistime supply a demand pro danou bunku
         final short supply = this.supply[y];
@@ -76,6 +80,7 @@ public abstract class Solution {
         System.out.printf("<Computing value>\ncost: %d\nsupply: %d\ndemand: %d%n", cost, supply, demand);
         final int value = cost * Math.min(supply, demand);
         totalCost += value;
+        uplneJedno[y][x] = value;
         return DeletedPart.values()[chooseIndex];
     }
 
