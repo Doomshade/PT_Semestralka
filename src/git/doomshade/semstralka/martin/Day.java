@@ -86,15 +86,45 @@ public class Day {
             ArrayList<Entity> supermarkets = assignSupermarkets(z);
             ArrayList<Entity> factories = assignFactories(z);
             int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s]
+            // vytvoř dummy row
+            //dummy řešení
+            int deltaDemand = 0;
+            for (Entity entity : supermarkets) {
+                deltaDemand += entity.value;
+            }
+            int deltaProduction = 0;
+            for (Entity entity : factories) {
+                deltaProduction += entity.value;
+            }
+
+            if (deltaDemand > deltaProduction) {
+                int dummyRow = deltaDemand - deltaProduction;
+                factories.add(new Entity(-1, dummyRow));
+            } else if (deltaDemand < deltaProduction) {
+                int dummyCol = deltaProduction - deltaDemand;
+                supermarkets.add(new Entity(-1, dummyCol));
+            } else {
+
+            }
+
+            //vytvoř TransportationForm
             // vytvoř matici cen
             for (int y = 0; y < costMatrix.length; y++) {
                 int yPos = factories.get(y).index;
                 for (int x = 0; x < costMatrix[0].length; x++) {
                     int xPos = supermarkets.get(x).index;
+                    if (yPos == -1) {
+                        costMatrix[y][x] = 0;
+                        continue;
+                    }
+                    if (xPos == -1) {
+                        costMatrix[y][x] = 0;
+                        continue;
+                    }
                     costMatrix[y][x] = simulation.costMatrix[yPos][xPos];
                 }
             }
-            //vytvoř TransportationForm
+
             tf[z] = new TransportationForm(supermarkets, factories, costMatrix);
         }
     }
