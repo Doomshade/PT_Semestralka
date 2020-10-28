@@ -10,5 +10,5 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses(SolutionTest.class)
-public class SmrhaTest {
+public class SmrhaTests {
 }
