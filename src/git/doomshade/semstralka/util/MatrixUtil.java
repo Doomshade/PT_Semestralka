@@ -11,7 +11,9 @@ import java.util.function.BiPredicate;
  * @author Jakub Šmrha
  * @version 1.0
  */
-public class MatrixUtil {
+public final class MatrixUtil {
+
+    private MatrixUtil(){}
 
     ///////////////////////////////////////////////////////////////////////////
     // Print metody
@@ -87,7 +89,7 @@ public class MatrixUtil {
      * @param <T>  typ matice
      * @return matici z pole dat
      */
-    private static <T> T _createMatrix(Object data, int xLen) throws IllegalArgumentException {
+    private static <T> T doCreateMatrix(Object data, int xLen) throws IllegalArgumentException {
         if (!data.getClass().isArray()) throw new IllegalArgumentException(data + " is not an array!");
 
         // java :)
@@ -109,7 +111,7 @@ public class MatrixUtil {
     public static <T> T[][] createMatrix(T[] data, int xLen) throws IllegalArgumentException {
 
         // nemusíme přetypovávat na konci na T[][] díky této metodě
-        final T[][] matrix = _createMatrix(data, xLen);
+        final T[][] matrix = doCreateMatrix(data, xLen);
 
         // bohužel, tento úsek se musí kopírovat, nelze přetypovat Object[][] na short[][] a vice versa
         for (int i = 0; i < xLen; i++) {

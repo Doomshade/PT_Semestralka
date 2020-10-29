@@ -8,15 +8,18 @@ import java.util.*;
  */
 public class MinCostSolution extends Solution {
 
-    public final TreeMap<Short, Collection<Integer>> SUPPLY_INDEX_MAP = new TreeMap<>();
+    // zde namapujeme cost na kolekci indexů
+    // treemap, protože chceme mít jako první indexy nejnižší cost
+    private final TreeMap<Integer, Collection<Integer>> SUPPLY_INDEX_MAP = new TreeMap<>();
 
-    public MinCostSolution(short[][] matrix, short[] supply, short[] demand) {
+    public MinCostSolution(int[][] matrix, int[] supply, int[] demand) {
         super(matrix, supply, demand);
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
-                short num = matrix[i][j];
+                int num = matrix[i][j];
                 final Collection<Integer> coll = SUPPLY_INDEX_MAP.getOrDefault(num, new HashSet<>());
-                coll.add(i * matrix.length + j);
+                final int idx = i * matrix[0].length + j;
+                coll.add(idx);
                 SUPPLY_INDEX_MAP.put(num, coll);
             }
         }
@@ -25,72 +28,67 @@ public class MinCostSolution extends Solution {
     @Override
     protected void solveProblem() {
         minCost();
-        /*final BiPredicate<Number, Number> predicate = (x, y) -> MatrixUtil.LOWEST_INTEGER.test(x, y) && supply[x.intValue()] != 0;
-        final short search = MatrixUtil.search(matrix, predicate, MatrixUtil.LOWEST_NUMBER);
-        System.out.println("MCS: " + search);*/
     }
 
     private void minCost() {
-        // musime se kouknout, zda je x a y in bounds
-        // pokud neni, tak nechceme delat nic
 
-        // vezmeme si první entry v mapě (je to sorted)
-        final Map.Entry<Short, Collection<Integer>> entry = SUPPLY_INDEX_MAP.pollFirstEntry();
+        // pokud je total supply nebo total demand nulový, můžeme přestat pokračovat
+        // if (!shouldContinue()) return;
 
-        // entry je prázdný, došli jsme pravědpodobně na konec
+        // vezmeme si první entry v mapě (je to sorted, tudíž to vezme nejnižší cost v matici)
+        final Map.Entry<Integer, Collection<Integer>> entry = SUPPLY_INDEX_MAP.pollFirstEntry();
+
+        // entry je prázdný, došli jsme pravědpodobně na konec (došly zásoby :( )
         if (entry == null) return;
 
         final Collection<Integer> coll = entry.getValue();
         final Iterator<Integer> it = coll.iterator();
 
         // pokud je iterátor for whatever reason prázdný, tak znovu voláme mincost
+        // PS: na začátku metody pollujeme z mapy a pokud je entry null, program skončí -> nestane se infinite rekurze
         if (!it.hasNext()) {
             minCost();
             return;
         }
 
+        // číslo, kterým budeme dělit pro získání indexu v matici
         final int len = costMatrix[0].length;
+
+        // musíme zjistit index v matici
         int idx, x, y;
         while (true) {
+
+            // vezmeme první index v matici s nejmenší cenou a smažeme ho z kolekce (již jsme ho vybrali)
             idx = it.next();
-            x = idx % len;
-            y = idx / len;
             it.remove();
 
+            // zjistíme si x a y v matici
+            x = idx % len;
+            y = idx / len;
+
+            // supply je na "sloupcové" straně, zatímco demand na "řádkové" straně
             int supply = this.supply[y];
             int demand = this.demand[x];
+
+            // našli jsme index, který nebyl vynulovaný, pokračujeme dál v programu
             if (supply != 0 && demand != 0) {
+                // pokud to nebyl poslední index, vrátíme kolekci zpět do mapy
+                if (!coll.isEmpty()) {
+                    SUPPLY_INDEX_MAP.put(entry.getKey(), coll);
+                }
                 break;
             }
 
             // došli jsme na konec iterace, začneme od začátku
+            // PS: viz na začátku programu !it.hasNext()
             if (!it.hasNext()) {
                 minCost();
                 return;
             }
         }
 
-        // index jsme našli, pokud to nebyl poslední index, vrátíme zpět do mapy
-        if (!coll.isEmpty()) {
-            SUPPLY_INDEX_MAP.put(entry.getKey(), coll);
-        }
-
-
-        /*
-        if (!xBounds) {
-            northWest(x - 1, y + 1);
-            return;
-        }
-
-        if (!yBounds) {
-            northWest(x + 1, y - 1);
-            return;
-        }*/
-
-        System.out.printf("Choosing from index {x=%d, y=%d}%n", x, y);
-        DeletedPart deletedPart = choose(x, y);
-        System.out.println("DeletedPart " + deletedPart);
-        System.out.println("-----------------------------------------");
+        // zavoláme choose, který "smaže" buňku z matice (a s ní řádek/sloupec)
+        choose(x, y);
 
         // našel se index, jedeme dál
         minCost();

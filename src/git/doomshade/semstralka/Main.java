@@ -4,14 +4,9 @@ import git.doomshade.semstralka.impl.graph.Storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Spouštěcí třída
@@ -68,88 +63,94 @@ public class Main {
     private static Storage testRead(String path, String fileName) throws IOException {
         long time = System.currentTimeMillis();
         final Storage data = read(new File(path, fileName));
-        time = (System.currentTimeMillis() - time);
+        time = System.currentTimeMillis() - time;
 
         LOGGER.info("Reading " + fileName + " took " + (time / 1000d) + "s to read");
         return data;
     }
 
     public static Storage read(File file) throws IOException {
-        int index = 0;
 
-        Scanner sc = new Scanner(file);
+        LOGGER.fine(file.getName());
+        long l = System.currentTimeMillis();
 
-        // vytvoříme temp file s vyfiltrovanými komenty
-        List<String> list = new ArrayList<>();
-        final File tempFile = Files.createTempFile("temp", "txt").toFile();
+        // allright idk, co tu vybrat za kolekci, v testech obě performují hodně podobně
+        // dáváme pouze add, tak linked
+        Collection<Integer> c = new LinkedList<>();
 
-        try (final PrintWriter out = new PrintWriter(tempFile)) {
+        try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 final String s = sc.nextLine();
 
                 // vyfiltrujeme prázdné řetězce a komenty
-                if (!s.isEmpty() && !s.startsWith("#")) {
-                    out.println(s);
-                    list.add(s);
+                if (!s.isEmpty() && s.charAt(0) != '#') {
+
+                    // splitne "s" podle mezer, zbaví se prázdných stringů (stává se somehow), namapuje na int a collectne do listu
+                    c.addAll(
+                            Arrays.stream(s.split(" "))
+                                    .filter(x -> !x.isEmpty())
+                                    .map(Integer::parseInt)
+                                    .collect(Collectors.toCollection(LinkedList::new)));
                 }
             }
 
-            // ukončíme čtení ze souboru
-            sc.close();
         }
 
-        // TODO konvertovat do linkedlistu (nebo nějaký queue) a pak číst tam odsud
-        // nastavíme scanner na temp file a čteme
-        sc = new Scanner(tempFile);
-        final String blokPocet = list.get(index++);
+        l = System.currentTimeMillis() - l;
+        // log
+        LOGGER.fine("Read took " + l + "ms");
+
+        final Iterator<Integer> itr = c.iterator();
+        /*
+        final String blokPocet = iterator.next();
 
         // pattern byl puvodne pro pocetTovaren apod.
-        final Pattern POCET_PATTERN = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
-        final Matcher m = POCET_PATTERN.matcher(blokPocet);
+        final Pattern pocetPattern = Pattern.compile("([\\d]+) ([\\d]+) ([\\d]+) ([\\d]+)");
+        final Matcher m = pocetPattern.matcher(blokPocet);
 
         // špatná hlavička - chybí počty továren, supermarketů, ...
         if (!m.find()) {
             throw new IOException("Soubor nesplňuje požadovaný formát");
-        }
+        }*/
 
         // data se dají přečíst, pokračujeme
         // TEST pro martina
-        short pocetTovaren = sc.nextShort();
-        short pocetSupermarketu = sc.nextShort();
-        short pocetDruhuZbozi = sc.nextShort();
-        short pocetDni = sc.nextShort();
-
+        int pocetTovaren = itr.next();
+        int pocetSupermarketu = itr.next();
+        int pocetDruhuZbozi = itr.next();
+        int pocetDni = itr.next();
 
         // nainicializujeme do pole
         // později si to převedeme do lepších struktur
-        short[] cenaPrevozu = new short[pocetTovaren * pocetSupermarketu];
-        short[] pocatecniZasoby = new short[pocetDruhuZbozi * pocetSupermarketu];
-        short[] produkceTovaren = new short[pocetTovaren * pocetDruhuZbozi * pocetDni];
-        short[] poptavkaZbozi = new short[pocetSupermarketu * pocetDruhuZbozi * pocetDni];
+        int[] cenaPrevozu = new int[pocetTovaren * pocetSupermarketu];
+        int[] pocatecniZasoby = new int[pocetDruhuZbozi * pocetSupermarketu];
+        int[] produkceTovaren = new int[pocetTovaren * pocetDruhuZbozi * pocetDni];
+        int[] poptavkaZbozi = new int[pocetSupermarketu * pocetDruhuZbozi * pocetDni];
 
         // teď přečteme celý soubor
         // scanner sám hodí exception, pokud bude špatný formát (vyskytne se string nebo špatný počet dat)
+        // TODO předělat do listu
         for (int i = 0; i < pocetTovaren * pocetSupermarketu; i++) {
-            cenaPrevozu[i] = sc.nextShort();
+            cenaPrevozu[i] = itr.next();
 
         }
 
         for (int i = 0; i < pocetDruhuZbozi * pocetSupermarketu; i++) {
-            pocatecniZasoby[i] = sc.nextShort();
+            pocatecniZasoby[i] = itr.next();
         }
 
         for (int i = 0; i < pocetTovaren * pocetDruhuZbozi * pocetDni; i++) {
-            produkceTovaren[i] = sc.nextShort();
-
+            produkceTovaren[i] = itr.next();
         }
 
         for (int i = 0; i < pocetSupermarketu * pocetDruhuZbozi * pocetDni; i++) {
-            poptavkaZbozi[i] = sc.nextShort();
+            poptavkaZbozi[i] = itr.next();
         }
 
-        if (sc.hasNext()) {
+        if (itr.hasNext()) {
             throw new RuntimeException("Did not read all FFS");
         }
+
 
         return new Storage(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni);
     }

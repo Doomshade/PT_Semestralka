@@ -4,7 +4,9 @@ package git.doomshade.semstralka.util;
  * @author Jakub Šmrha
  * @version 1.0 (27.10.2020)
  */
-public class Util {
+public final class Util {
+
+    private Util(){}
 
     public static long benchmark(Runnable action){
         long l = System.nanoTime();

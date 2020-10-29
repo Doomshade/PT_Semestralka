@@ -1,10 +1,13 @@
 package test.git.doomshade.semestralka;
 
+import git.doomshade.semstralka.Main;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import test.git.doomshade.semestralka.martin.MartinTest;
-import test.git.doomshade.semestralka.smrha.SmrhaTest;
+import test.git.doomshade.semestralka.martin.MartinTests;
+import test.git.doomshade.semestralka.smrha.SmrhaTests;
+
+import java.util.logging.Level;
 
 /**
  * @author Jakub Šmrha
@@ -13,10 +16,10 @@ import test.git.doomshade.semestralka.smrha.SmrhaTest;
 public class TestRunner {
 
     public static void main(String[] args) {
-        Result result = JUnitCore.runClasses(SmrhaTest.class, MartinTest.class);
+        Result result = JUnitCore.runClasses(SmrhaTests.class, MartinTests.class);
 
         for (Failure failure : result.getFailures()) {
-            System.out.println(failure.getTrace());
+            Main.LOGGER.severe(failure.getTrace());
         }
     }
 }

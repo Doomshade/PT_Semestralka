@@ -14,14 +14,14 @@ public class Storage {
 
 
     /**
-     * Pole dat, postačí short
+     * Pole dat
      */
-    private final short[] cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi;
+    private final int[] cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi;
 
     /**
-     * Velikost pole dat, postačí short
+     * Velikost pole dat
      */
-    public final short pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni;
+    public final int pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni;
 
     /**
      * Hlavní konstruktor pro uschování pole dat
@@ -35,7 +35,7 @@ public class Storage {
      * @param pocetDruhuZbozi   počet druhů zboží
      * @param pocetDni          počet dní
      */
-    public Storage(short[] cenaPrevozu, short[] pocatecniZasoby, short[] produkceTovaren, short[] poptavkaZbozi, short pocetTovaren, short pocetSupermarketu, short pocetDruhuZbozi, short pocetDni) {
+    public Storage(int[] cenaPrevozu, int[] pocatecniZasoby, int[] produkceTovaren, int[] poptavkaZbozi, int pocetTovaren, int pocetSupermarketu, int pocetDruhuZbozi, int pocetDni) {
         this.cenaPrevozu = cenaPrevozu;
         this.pocatecniZasoby = pocatecniZasoby;
         this.produkceTovaren = produkceTovaren;
@@ -144,10 +144,10 @@ public class Storage {
      */
     public class Data {
 
-        public final short[] cenaPrevozu = Arrays.copyOf(Storage.this.cenaPrevozu, Storage.this.cenaPrevozu.length);
-        public final short[] pocatecniZasoby = Arrays.copyOf(Storage.this.pocatecniZasoby, Storage.this.pocatecniZasoby.length);
-        public final short[] produkceTovaren = Arrays.copyOf(Storage.this.produkceTovaren, Storage.this.produkceTovaren.length);
-        public final short[] poptavkaZbozi = Arrays.copyOf(Storage.this.poptavkaZbozi, Storage.this.poptavkaZbozi.length);
+        public final int[] cenaPrevozu = Arrays.copyOf(Storage.this.cenaPrevozu, Storage.this.cenaPrevozu.length);
+        public final int[] pocatecniZasoby = Arrays.copyOf(Storage.this.pocatecniZasoby, Storage.this.pocatecniZasoby.length);
+        public final int[] produkceTovaren = Arrays.copyOf(Storage.this.produkceTovaren, Storage.this.produkceTovaren.length);
+        public final int[] poptavkaZbozi = Arrays.copyOf(Storage.this.poptavkaZbozi, Storage.this.poptavkaZbozi.length);
     }
 
 

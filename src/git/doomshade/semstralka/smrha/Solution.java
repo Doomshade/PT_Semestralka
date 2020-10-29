@@ -1,5 +1,7 @@
 package git.doomshade.semstralka.smrha;
 
+import git.doomshade.semstralka.Main;
+
 /**
  * Solution pro tento problém
  *
@@ -8,41 +10,89 @@ package git.doomshade.semstralka.smrha;
  */
 public abstract class Solution {
 
-    public final short[][] costMatrix;
+    /**
+     * Matice cen
+     */
+    public final int[][] costMatrix;
 
-    public final int[][] uplneJedno;
+    /**
+     * Supply a demand
+     */
+    public final int[] supply, demand;
 
-    public final short[] supply, demand;
+    /**
+     * Zde uchováme data o tom, do jakého supermarketu jsme poslali kolik zboží
+     */
+    private final int[][] uplneJedno;
 
-    private int totalCost = 0;
+    /**
+     * Data o total supply/demand a ceně
+     */
+    private int totalSupply, totalDemand, totalCost;
 
-    public Solution(short[][] costMatrix, short[] supply, short[] demand) {
+
+    private boolean solved = false;
+
+    /**
+     * Hlavní konstruktor
+     *
+     * @param costMatrix matice cen
+     * @param supply     produkce
+     * @param demand     poptávka
+     */
+    public Solution(int[][] costMatrix, int[] supply, int[] demand) {
         this.costMatrix = costMatrix;
-        this.uplneJedno = new int[costMatrix.length][costMatrix[0].length];
         this.supply = supply;
         this.demand = demand;
+        this.uplneJedno = new int[costMatrix.length][costMatrix[0].length];
+
+        for (int s : supply) {
+            totalSupply += s;
+        }
+
+        for (int s : demand) {
+            totalDemand += s;
+        }
     }
 
+    /**
+     * Pomocná enum pro vymazanou část matice
+     */
     enum DeletedPart {
         ROW, COLUMN, BOTH
     }
 
+    protected boolean shouldContinue() {
+        return totalDemand > 0 && totalSupply > 0;
+    }
+
+
+    // mohli bychom vracet DeletedPart, ale pro mincost/vma je to useless
 
     /**
      * Přeškrtne řádek nebo sloupec v matici a přičte ho do total cost
      *
      * @param x x
      * @param y y
-     * @return část, která se škrtla
+     * @return část, která se škrtla (0 = řádek, 1 = sloupec, 2 = řádek i sloupec)
      */
     protected DeletedPart choose(int x, int y) {
 
+        // log
+        Main.LOGGER.info(String.format("Choosing from index {x=%d, y=%d}%n", x, y));
+
         // cena cesty
-        final short cost = costMatrix[y][x];
+        final int cost = costMatrix[y][x];
 
         // zjistime supply a demand pro danou bunku
-        final short supply = this.supply[y];
-        final short demand = this.demand[x];
+        final int supply = this.supply[y];
+        final int demand = this.demand[x];
+
+        // logneme si totalSupply a demand pro zrychlení programu
+        // program nemusí pokračovat, pokud je supply nebo demand nulový
+        // TODO implementace /\
+        totalSupply -= supply;
+        totalDemand -= demand;
 
         // na základě tohoto indexu returnneme DeletedPart enum
         // 0 = row, 1 = column, 2 = both
@@ -51,12 +101,6 @@ public abstract class Solution {
         // jedina vyjimka je negativni supply/demand, ale to je pak chyba v datech
         int chooseIndex = -1;
 
-        // TODO: wrong, delete l8r (kdyby náhodou to bylo actually right :D )
-        // neni supply, musime se posunout o radek
-        // zde nemazeme row ani column
-        /*if (supply == 0) {
-            chooseIndex += 2;
-        }*/
         // demand je vetsi nez supply
         // preskrtnout radek (x)
         if (demand >= supply) {
@@ -64,11 +108,6 @@ public abstract class Solution {
             chooseIndex++;
         }
 
-        // TODO: wrong, delete l8r (kdyby náhodou to bylo actually right :D )
-        // neni demand, musime se posunout o sloupec
-        /*if (demand == 0) {
-            chooseIndex++;
-        }*/
         // supply je vetsi nez demand
         // preskrtnout sloupec (y)
         if (demand <= supply) {
@@ -76,14 +115,28 @@ public abstract class Solution {
             chooseIndex += 2;
         }
 
+        // log
+        Main.LOGGER.info(String.format("<Computing value>\ncost: %d\nsupply: %d\ndemand: %d%n", cost, supply, demand));
+
         // value = cena cesty * pocet pouzitych supplies
-        System.out.printf("<Computing value>\ncost: %d\nsupply: %d\ndemand: %d%n", cost, supply, demand);
         final int value = cost * Math.min(supply, demand);
         totalCost += value;
-        uplneJedno[y][x] = value;
-        return DeletedPart.values()[chooseIndex];
+        uplneJedno[y][x] = Math.min(supply, demand);
+
+        final DeletedPart deletedPart = DeletedPart.values()[chooseIndex];
+
+        // log
+        Main.LOGGER.info("DeletedPart " + deletedPart);
+        Main.LOGGER.info("-----------------------------------------");
+        return deletedPart;
     }
 
+    /**
+     * "Vymaže" řádek v matici (resp. sníží poptávku o produkci a produkci vynuluje)
+     *
+     * @param x x v cost matici
+     * @param y y v cost matici
+     */
     private void deleteRow(int x, int y) {
 
         // delete row <=> supply = 0
@@ -92,6 +145,12 @@ public abstract class Solution {
         supply[y] = 0;
     }
 
+    /**
+     * "Vymaže" sloupec v matici (resp. sníží produkci o poptávku a poptávku vynuluje)
+     *
+     * @param x x v cost matici
+     * @param y y v cost matici
+     */
     private void deleteColumn(int x, int y) {
 
 
@@ -101,11 +160,24 @@ public abstract class Solution {
         demand[x] = 0;
     }
 
-    public final int solve() {
-        totalCost = 0;
+    /**
+     * Vyřeší problém a vrátí o něm data
+     *
+     * @return data
+     */
+    public final SolutionData solve() {
+
+        // nechceme, abychom řešili problém dvakrát (ani to nelze tak dělat, jelikož se pole změní během chodu solution)
+        if (solved) {
+            throw new RuntimeException("Problém byl již vyřešen");
+        }
         solveProblem();
-        return totalCost;
+        solved = true;
+        return new SolutionData(getClass(), totalCost, uplneJedno);
     }
 
+    /**
+     * Vyřeší problém
+     */
     protected abstract void solveProblem();
 }
