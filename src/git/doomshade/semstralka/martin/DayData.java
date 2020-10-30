@@ -58,12 +58,12 @@ public class DayData {
             TransportationForm actual = transportationForms[z];
             int nextFactory = 0;
             for (int d = 0; d < transportationMatrices[0].length; d++) {
-                int yPos = actual.factories.get(d).index;
+                int yPos = actual.factories.get(nextFactory).index;
                 if (yPos != d)
                     continue;
                 int nextSupermarket = 0;
                 for (int s = 0; s < transportationMatrices[0][0].length; s++) {
-                    int xPos = actual.supermarkets.get(s).index;
+                    int xPos = actual.supermarkets.get(nextSupermarket).index;
                     if (xPos != s)
                         continue;
                     transportationMatrices[z][d][s] = (int) actual.optimSolution[nextFactory][nextSupermarket];

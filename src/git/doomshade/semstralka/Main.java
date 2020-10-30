@@ -53,7 +53,7 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
-        String filePath = "C:\\Users\\jakub\\Desktop\\pt_2020_2021_data\\custom_test_small.txt";
+        String filePath = "C:\\Users\\jakub\\Desktop\\pt_2020_2021_data\\custom\\1Zbozi\\0Demand\\custom_test_production.txt";
         Storage storage = read(new File(filePath));
 
         Simulation matrix = new Simulation(storage);
