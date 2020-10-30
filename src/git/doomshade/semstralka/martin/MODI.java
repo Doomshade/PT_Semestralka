@@ -376,12 +376,14 @@ public class MODI {
             // vše hotovo, vyheneruj nové řešení
             generateNewSolution(cycle);
 
+            /*
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 4; x++) {
                     System.out.print(arcMatrix[y][x] + " ");
                 }
                 System.out.println();
             }
+             */
         }
     }
 }
