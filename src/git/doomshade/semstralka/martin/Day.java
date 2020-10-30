@@ -99,7 +99,7 @@ public class Day {
         for (int z = 0; z < simulation.storage.pocetDruhuZbozi; z++) {
             ArrayList<Entity> supermarkets = assignSupermarkets(z);
             ArrayList<Entity> factories = assignFactories(z);
-            int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s]
+            //int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s] // přesun
             // vytvoř dummy row
             //dummy řešení
             int deltaDemand = 0;
@@ -117,9 +117,9 @@ public class Day {
             } else if (deltaDemand < deltaProduction) {
                 int dummyCol = deltaProduction - deltaDemand;
                 supermarkets.add(new Entity(-1, dummyCol));
-            } else {
-
             }
+
+            int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s]
 
             //vytvoř TransportationForm
             // vytvoř matici cen
