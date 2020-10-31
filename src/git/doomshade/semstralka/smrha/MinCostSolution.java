@@ -14,11 +14,12 @@ public class MinCostSolution extends Solution {
 
     public MinCostSolution(int[][] matrix, int[] supply, int[] demand) {
         super(matrix, supply, demand);
+        final int rowLen = matrix[0].length;
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
+            for (int j = 0; j < rowLen; j++) {
                 int num = matrix[i][j];
                 final Collection<Integer> coll = SUPPLY_INDEX_MAP.getOrDefault(num, new HashSet<>());
-                final int idx = i * matrix[0].length + j;
+                final int idx = i * rowLen + j;
                 coll.add(idx);
                 SUPPLY_INDEX_MAP.put(num, coll);
             }

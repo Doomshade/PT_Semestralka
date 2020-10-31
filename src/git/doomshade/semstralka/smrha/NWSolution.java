@@ -1,5 +1,7 @@
 package git.doomshade.semstralka.smrha;
 
+import git.doomshade.semstralka.util.MatrixUtil;
+
 /**
  * @author Jakub Šmrha
  * @version 1.0 (27.10.2020)
@@ -20,6 +22,8 @@ public class NWSolution extends Solution {
         // také, pokud je total supply nebo demand nulový, nemá cenu pokračovat
         // if (!shouldContinue()) return;
         if (x >= costMatrix[0].length || y >= costMatrix.length) return;
+
+        MatrixUtil.searchIndex(costMatrix, MatrixUtil.HIGHEST_INTEGER, MatrixUtil.LOWEST_NUMBER);
 
         // choose nám vrátí část, která byla smazána
         // na jejím základě pokračujeme v programu
