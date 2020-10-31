@@ -7,6 +7,14 @@ import git.doomshade.semstralka.util.MatrixUtil;
  * @version 1.0 (27.10.2020)
  */
 public class NWSolution extends Solution {
+
+    /**
+     * Hlavní konstruktor
+     *
+     * @param matrix matice cen
+     * @param supply     produkce
+     * @param demand     poptávka
+     */
     public NWSolution(int[][] matrix, int[] supply, int[] demand) {
         super(matrix, supply, demand);
     }
