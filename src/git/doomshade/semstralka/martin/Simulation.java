@@ -87,12 +87,12 @@ public class Simulation {
      *
      * @return obsah simulovaného dne
      */
-    public Day simulateNextDay() {
+    public DayData simulateNextDay() {
         Day day = new Day(this);
-        day.simulateDay();
+        DayData result = day.simulateDay();
 
         currentDay++;
-        return day;
+        return result;
     }
 
     // zpracování vstupních dat

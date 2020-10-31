@@ -2,6 +2,7 @@ package git.doomshade.semstralka.martin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 /**
@@ -276,17 +277,28 @@ public class MODI {
     //-- pro degenerative solution (tj. máme < m+n-1 přiřazených hran)
 
     private boolean calculateEpsilons() {
-        ArrayList<Integer> unalocatedUs = new ArrayList<>();
+        // TODO předělat
+        //ArrayList<Integer> unalocatedUs = new ArrayList<>();
+        ArrayList<Integer> unalocatedUs = new ArrayList<>(); //procházíme všechna uS
         // najdi nepřiřazená u -> tedy u == Inf
         for (int i = 0; i < u.length; i++) {
-            if (u[i] == Double.POSITIVE_INFINITY)
                 unalocatedUs.add(i);
         }
 
         // projdi všechny řádky s nepřiřazenými u a přiřaď epsilon tak aby nevznikal cyklus
         ArrayList<int[]> bannedPos = new ArrayList<>();
+        // potřeba přidat další podmínku
+        int[] maxBans = new int[unalocatedUs.size()]; // pro každý řádek jeho max zabanovaných pozic
+        for (int u = 0; u < unalocatedUs.size(); u++) {
+            for (int x = 0; x < arcMatrix[0].length; x++) {
+                if (arcMatrix[u][x] == 0)
+                    maxBans[u]++;
+            }
+        }
+
         CycleDetection cd = new CycleDetection(arcMatrix);
         int epsilons = 0;
+        int step = 0;
         while (true) {
             // zkus každému u přiřadit epsilon, tak aby nevznikal cyklus
             for (int index : unalocatedUs) {
@@ -300,7 +312,12 @@ public class MODI {
                             ++banCount;
                         }
                     }
+                    /*
                     if (banCount == arcMatrix[0].length)
+                        return false;
+                        ŠPATNĚ
+                     */
+                    if (banCount == maxBans[index]  && step != 0)
                         return false;
                     if (banned)
                         continue;
@@ -321,11 +338,12 @@ public class MODI {
                     ++epsilons;
                     break;
                 }
+
+                if (epsilons == (arcMatrix.length + arcMatrix[0].length - 1) - allocated.size())//unalocatedUs.size())
+                    return true;
             }
 
-            if (epsilons == unalocatedUs.size())
-                return true;
-
+            step++;
             // nenašel jsi všechna epsilon
             // resetuj epsilon
             epsilons = 0;
@@ -364,8 +382,16 @@ public class MODI {
                  */
             }
             int[] netIncrease = calculateNetIncrease(); // najdi Net Increasu
-            if (!existNegNetIncrease(netIncrease))
+            if (!existNegNetIncrease(netIncrease)) {
+                // hotovo a odstan nekonecna
+                for (int y = 0; y < arcMatrix.length; y++) {
+                    for (int x = 0; x < arcMatrix[0].length; x++) {
+                        if (arcMatrix[y][x] == Double.POSITIVE_INFINITY)
+                            arcMatrix[y][x] = 0;
+                    }
+                }
                 return true;
+            }
             int[] coordOfMin = findLargestNegativeIncrease(netIncrease); // najdi souřadnice nejmenšího Net Increasu
             ArrayList<double[]> cycle = (ArrayList<double[]>) findCycleValues(coordOfMin[0], coordOfMin[1]); // najdi cyklus a jeho hodnoty
             if (cycle == null) {
@@ -376,12 +402,14 @@ public class MODI {
             // vše hotovo, vyheneruj nové řešení
             generateNewSolution(cycle);
 
+            /*
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 4; x++) {
                     System.out.print(arcMatrix[y][x] + " ");
                 }
                 System.out.println();
             }
+             */
         }
     }
 }

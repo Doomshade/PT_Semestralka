@@ -1,5 +1,9 @@
 package git.doomshade.semstralka.martin;
 
+import git.doomshade.semstralka.smrha.MinCostSolution;
+import git.doomshade.semstralka.smrha.SolutionData;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,7 +28,7 @@ public class Day {
     /**
      * tvar matice pro přepravní problém pro každé zboží
      */
-    private final TransportationForm[] tf;
+    private final TransportationForm[] tfs;
 
     /**
      * Vytvoří novou instanci reprezentující 1 konkrétní den přepravy,
@@ -35,16 +39,23 @@ public class Day {
     public Day(Simulation simulation) {
         this.simulation = simulation;
         this.simDay = simulation.getCurrentDay();
-        this.tf = new TransportationForm[simulation.storage.pocetDruhuZbozi];
+        this.tfs = new TransportationForm[simulation.storage.pocetDruhuZbozi];
     }
 
-    public boolean simulateDay() {
+    /**
+     * Provede simulaci 1 dne a následně vrátí vrátí informace o průběhu dne
+     *
+     * @return informace o průběhu dne
+     */
+    public DayData simulateDay() {
         calculateCurrentDemandAndStocks();
         // teď je potřeba vytvořit pro každé zboží správný tvar abychom mohli provádět algoritmy pro optimalizaci dopravy
         createTFs();
+        // pro všechny TF zjisti 1 použitelné řešení (třeba min-cost algoritmem)
+        runAlgo();
 
-
-        return true;
+        // vrátíme informace o průběhu algoritmu
+        return new DayData(tfs, simulation.storage.pocetSupermarketu, simulation.storage.pocetTovaren);
     }
 
     /**
@@ -81,11 +92,14 @@ public class Day {
         }
     }
 
+    /**
+     * Vytvoří všechny potřebné údaje pro vykonání algoritmů pro zjištění min-cost přepravys
+     */
     private void createTFs() {
         for (int z = 0; z < simulation.storage.pocetDruhuZbozi; z++) {
             ArrayList<Entity> supermarkets = assignSupermarkets(z);
             ArrayList<Entity> factories = assignFactories(z);
-            int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s]
+            //int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s] // přesun
             // vytvoř dummy row
             //dummy řešení
             int deltaDemand = 0;
@@ -103,9 +117,9 @@ public class Day {
             } else if (deltaDemand < deltaProduction) {
                 int dummyCol = deltaProduction - deltaDemand;
                 supermarkets.add(new Entity(-1, dummyCol));
-            } else {
-
             }
+
+            int[][] costMatrix = new int[factories.size()][supermarkets.size()]; // [d,s]
 
             //vytvoř TransportationForm
             // vytvoř matici cen
@@ -125,7 +139,31 @@ public class Day {
                 }
             }
 
-            tf[z] = new TransportationForm(supermarkets, factories, costMatrix);
+            tfs[z] = new TransportationForm(supermarkets, factories, costMatrix);
+        }
+    }
+
+    private void runAlgo() {
+        for (TransportationForm tf : tfs) {
+            int[] supply = convertArrayListToArray(tf.factories);
+            int[] demand = convertArrayListToArray(tf.supermarkets);
+
+            // feasible solution
+
+            MinCostSolution mcs = new MinCostSolution(tf.costMatrix, supply, demand);
+            SolutionData data = mcs.solve();
+
+            // optimal feasible solution
+
+            double[][] res = convertToDouble(data.uplneJedno);
+            tf.solution = Arrays.copyOf(res, res.length);
+
+            MODI modi = new MODI(res, tf.costMatrix);
+            boolean optimalSuccesful = modi.calculateMODI();
+            if (!optimalSuccesful)
+                tf.optimSolution = null;
+            else
+                tf.optimSolution = Arrays.copyOf(res, res.length);
         }
     }
 
@@ -151,5 +189,23 @@ public class Day {
             factories.add(factory);
         }
         return factories;
+    }
+
+    private int[] convertArrayListToArray(ArrayList<Entity> entities) {
+        int[] res = new int[entities.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = entities.get(i).value;
+        }
+        return res;
+    }
+
+    private double[][] convertToDouble(int[][] matrix) {
+        double[][] res = new double[matrix.length][matrix[0].length];
+        for (int y = 0; y < res.length; y++ ) {
+            for (int x = 0; x < res[0].length; x++) {
+                res[y][x] = matrix[y][x];
+            }
+        }
+        return res;
     }
 }

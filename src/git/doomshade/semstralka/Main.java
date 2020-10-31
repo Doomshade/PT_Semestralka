@@ -1,6 +1,8 @@
 package git.doomshade.semstralka;
 
 import git.doomshade.semstralka.impl.graph.Storage;
+import git.doomshade.semstralka.martin.DayData;
+import git.doomshade.semstralka.martin.Simulation;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class Main {
      * @throws IOException pokud nastane chyba při čtení souboru
      */
     public static void main(String[] args) throws IOException {
+        /*
         String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests";
         String fileName = "real_large.txt";
         //testRead(path, fileName);
@@ -50,6 +53,14 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
+        String filePath = "C:\\Users\\jakub\\Desktop\\pt_2020_2021_data\\custom\\1Zbozi\\0Demand\\custom_test_production.txt";
+        Storage storage = read(new File(filePath));
+
+        Simulation matrix = new Simulation(storage);
+        DayData data = matrix.simulateNextDay();
+        data.getTransportationMatrices();
+
+        System.out.println(Arrays.stream(data.optimalPrice).sum());
     }
 
     /**

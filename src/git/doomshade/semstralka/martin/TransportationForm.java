@@ -16,7 +16,8 @@ public class TransportationForm {
     /**
      * řešení
      */
-    public int[][] solution;
+    public double[][] solution;
+    public double[][] optimSolution;
 
     /**
      * Vytvoří novou instanci reprezentuijící 1 přepravní problém (tj. pro jeden druh zboží)
