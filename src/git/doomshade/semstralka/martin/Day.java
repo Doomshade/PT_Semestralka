@@ -139,12 +139,18 @@ public class Day {
                 }
             }
 
-            tfs[z] = new TransportationForm(supermarkets, factories, costMatrix);
+            if (!(supermarkets.size() == 0 && factories.size() == 0))
+                tfs[z] = new TransportationForm(supermarkets, factories, costMatrix);
+            else
+                tfs[z] = null;
         }
     }
 
     private void runAlgo() {
         for (TransportationForm tf : tfs) {
+            if (tf == null)
+                continue;;
+
             int[] supply = convertArrayListToArray(tf.factories);
             int[] demand = convertArrayListToArray(tf.supermarkets);
 
@@ -201,7 +207,7 @@ public class Day {
 
     private double[][] convertToDouble(int[][] matrix) {
         double[][] res = new double[matrix.length][matrix[0].length];
-        for (int y = 0; y < res.length; y++ ) {
+        for (int y = 0; y < res.length; y++) {
             for (int x = 0; x < res[0].length; x++) {
                 res[y][x] = matrix[y][x];
             }

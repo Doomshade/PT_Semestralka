@@ -71,8 +71,7 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
-
-        String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_price.txt";
+        String filePath = "C:\\Users\\jakub\\Desktop\\a\\vanilla\\real_small.txt";
         Storage storage = read(new File(filePath));
 
         Simulation matrix = new Simulation(storage);
@@ -81,7 +80,6 @@ public class Main {
 
         System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
         System.out.println(Arrays.stream(data.optimalPrice).sum());
-        //
     }
 
     /**
