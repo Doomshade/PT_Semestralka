@@ -3,6 +3,8 @@ package git.doomshade.semstralka;
 import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.martin.DayData;
 import git.doomshade.semstralka.martin.Simulation;
+import git.doomshade.semstralka.smrha.Solution;
+import git.doomshade.semstralka.smrha.VAMSolution;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,10 +74,15 @@ public class Main {
             }
         });*/
 
+        LOGGER.setLevel(Level.WARNING);
         String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_price.txt";
         Storage storage = read(new File(filePath));
 
+
         Simulation matrix = new Simulation(storage);
+        /*Solution solution = new VAMSolution(matrix.costMatrix, matrix.productionMatrix[0][0], matrix.demandMatrix[0][0]);
+        solution.solve();*/
+
         DayData data = matrix.simulateNextDay();
         data.getTransportationMatrices();
 
