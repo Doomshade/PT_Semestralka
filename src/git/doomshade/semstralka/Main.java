@@ -7,7 +7,7 @@ import git.doomshade.semstralka.martin.Simulation;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +19,24 @@ public class Main {
      * Logger této aplikace
      */
     public static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+    static {
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setFormatter(new SimpleFormatter() {
+            private static final String format = "[%1$tT] [%2$s] %3$s %n";
+
+            @Override
+            public synchronized String format(LogRecord lr) {
+                return String.format(format,
+                        new Date(lr.getMillis()),
+                        lr.getLevel().getLocalizedName(),
+                        lr.getMessage()
+                );
+            }
+        });
+        LOGGER.setUseParentHandlers(false);
+        LOGGER.addHandler(handler);
+    }
 
     /**
      * Main...
@@ -60,6 +78,7 @@ public class Main {
         DayData data = matrix.simulateNextDay();
         data.getTransportationMatrices();
 
+        System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
         System.out.println(Arrays.stream(data.optimalPrice).sum());
     }
 
