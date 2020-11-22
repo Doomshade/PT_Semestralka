@@ -30,12 +30,16 @@ public class DayData {
      */
     private final int[][][] arcMatrix;
 
+    private final int[][] stocks;
+
+    private final boolean daySuccessful;
+
     /**
      * Instance obsahuje data z 1 dne algoritmu
      *
      * @param transportationForms data z přepravních problému pro všechna zboží
      */
-    public DayData(TransportationForm[] transportationForms, int supermarkets, int factories) {
+    public DayData(TransportationForm[] transportationForms, int supermarkets, int factories, int[][] stocks, boolean daySuccessful) {
         this.transportationForms = transportationForms;
         this.supermarkets = supermarkets;
         this.factories = factories;
@@ -44,6 +48,9 @@ public class DayData {
 
         this.feasiblePrice = getFeasiblePrice();
         this.optimalPrice = getOptimalPrice();
+
+        this.stocks = stocks;
+        this.daySuccessful = daySuccessful;
     }
 
     /**
@@ -56,19 +63,22 @@ public class DayData {
 
         for (int z = 0; z < transportationMatrices.length; z++) {
             TransportationForm actual = transportationForms[z];
-            if (actual == null)
+            if (actual == null) {
                 continue;
+            }
 
             int nextFactory = 0;
             for (int d = 0; d < transportationMatrices[0].length; d++) {
                 int yPos = (nextFactory >= actual.factories.size()) ? -1 : actual.factories.get(nextFactory).index;
-                if (yPos != d)
+                if (yPos != d) {
                     continue;
+                }
                 int nextSupermarket = 0;
                 for (int s = 0; s < transportationMatrices[0][0].length; s++) {
-                    int xPos = (nextSupermarket >= actual.supermarkets.size()) ? -1 :actual.supermarkets.get(nextSupermarket).index;
-                    if (xPos != s)
+                    int xPos = (nextSupermarket >= actual.supermarkets.size()) ? -1 : actual.supermarkets.get(nextSupermarket).index;
+                    if (xPos != s) {
                         continue;
+                    }
                     transportationMatrices[z][d][s] = (int) actual.optimSolution[nextFactory][nextSupermarket];
                     nextSupermarket++;
                 }
@@ -111,8 +121,9 @@ public class DayData {
 
         for (int i = 0; i < transportationForms.length; i++) {
             TransportationForm actual = transportationForms[i];
-            if (actual == null)
+            if (actual == null) {
                 continue;
+            }
             for (int d = 0; d < actual.factories.size(); d++) {
                 for (int s = 0; s < actual.supermarkets.size(); s++) {
                     optimalPrice[i] += actual.optimSolution[d][s] * actual.costMatrix[d][s];
@@ -123,4 +134,15 @@ public class DayData {
         return optimalPrice;
     }
 
+    public int[][] getStocks() {
+        return stocks;
+    }
+
+    public boolean isDaySuccessful() {
+        return daySuccessful;
+    }
+
+    public TransportationForm[] getTransportationForms() {
+        return transportationForms;
+    }
 }

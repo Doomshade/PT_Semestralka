@@ -2,6 +2,8 @@ package git.doomshade.semstralka.martin;
 
 import git.doomshade.semstralka.impl.graph.Storage;
 
+import java.util.Arrays;
+
 /**
  * @author Martin Jakubašek
  */
@@ -52,6 +54,10 @@ public class Simulation {
      */
     public final int totalDemand;
 
+    public final DayData[] daysData;
+
+    public final long[] timeBenchmark;
+
     // konstruktor
 
     /**
@@ -73,6 +79,13 @@ public class Simulation {
         this.totalStocks = getTotalStocks();
         this.totalProduction = getTotalProduction();
         this.totalDemand = getTotalDemand();
+
+        this.indexLastDay = storage.pocetDni - 1;
+
+        this.daysData = new DayData[storage.pocetDni];
+        Arrays.fill(daysData, null);
+
+        timeBenchmark = new long[storage.pocetDni];
     }
 
     // veřejné metody
@@ -81,6 +94,8 @@ public class Simulation {
      * Den ve kterém se nachází simulace
      */
     private int currentDay = 0;
+    public int indexLastDay;
+    public boolean simSuccessful = true;
 
     /**
      * Simuluj následující den simulace
@@ -88,11 +103,35 @@ public class Simulation {
      * @return obsah simulovaného dne
      */
     public DayData simulateNextDay() {
+        if (currentDay > indexLastDay) {
+            return null;
+        }
+
+        //.. timed section
+        long start = System.currentTimeMillis();
+
         Day day = new Day(this);
         DayData result = day.simulateDay();
 
+        daysData[currentDay] = result;
+
+
+        long finish = System.currentTimeMillis();
+        long timeElapsed = finish - start;
+        timeBenchmark[currentDay] = timeElapsed;
+        //.. end of timed section
+
         currentDay++;
+
         return result;
+    }
+
+    public DayData[] simulateRestOfDays() {
+        int start = currentDay;
+        for (int i = currentDay; i <= indexLastDay; i++) {
+            daysData[i] = simulateNextDay();
+        }
+        return Arrays.copyOfRange(daysData, start, daysData.length);
     }
 
     // zpracování vstupních dat
@@ -262,6 +301,11 @@ public class Simulation {
 
     // GET-SET
 
+    /**
+     * Vrátí index dne
+     *
+     * @return index dne
+     */
     public int getCurrentDay() {
         return currentDay;
     }

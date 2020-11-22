@@ -71,15 +71,18 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
-        String filePath = "C:\\Users\\jakub\\Desktop\\a\\vanilla\\real_small.txt";
+        String filePath = "C:\\Users\\jakub\\Downloads\\PT\\test_optim.txt";
         Storage storage = read(new File(filePath));
 
+        //--
         Simulation matrix = new Simulation(storage);
-        DayData data = matrix.simulateNextDay();
-        data.getTransportationMatrices();
+        DayData[] data = matrix.simulateRestOfDays();
+        System.out.println("HI");
+        //data.getTransportationMatrices();
 
-        System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
-        System.out.println(Arrays.stream(data.optimalPrice).sum());
+        //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
+        //System.out.println(Arrays.stream(data.optimalPrice).sum());
+        //--
     }
 
     /**
