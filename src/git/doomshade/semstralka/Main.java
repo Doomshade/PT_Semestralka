@@ -73,22 +73,22 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
-
-        LOGGER.setLevel(Level.WARNING);
-        String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_price.txt";
+/*
+        LOGGER.setLevel(Level.INFO);
+        String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_small.txt";
         Storage storage = read(new File(filePath));
 
 
         Simulation matrix = new Simulation(storage);
-        /*Solution solution = new VAMSolution(matrix.costMatrix, matrix.productionMatrix[0][0], matrix.demandMatrix[0][0]);
-        solution.solve();*/
+        Solution solution = new VAMSolution(matrix.costMatrix, matrix.productionMatrix[0][0], matrix.demandMatrix[0][0]);
+        solution.solve();
 
         DayData data = matrix.simulateNextDay();
         data.getTransportationMatrices();
 
-        System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
+        //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
         System.out.println(Arrays.stream(data.optimalPrice).sum());
-        //
+        //*/
     }
 
     /**
