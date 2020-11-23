@@ -13,13 +13,17 @@ import java.util.stream.Collectors;
  * @author Jakub Šmrha
  * @version 1.0 (22.11.2020)
  */
-public class DataSaver implements IDataSaver {
+class DataSaver implements IDataSaver {
 
-    private String[] tovarny;
-    private String[] supermarkety;
-    private String[] zbozi;
+    static String[] tovarny;
+    static String[] supermarkety;
+    static String[] zbozi;
 
     private static final File FOLDER;
+
+    DataSaver() {
+    }
+
 
     static {
         File PATH = new File("resources");
@@ -53,6 +57,7 @@ public class DataSaver implements IDataSaver {
     }
 
     private void fillInArrays(int tLen, int sLen, int zLen) throws IOException {
+        if (tovarny != null) return;
         tovarny = new String[tLen];
         supermarkety = new String[sLen];
         zbozi = new String[zLen];
@@ -83,41 +88,87 @@ public class DataSaver implements IDataSaver {
         Collections.shuffle(Arrays.stream(arr).collect(Collectors.toList()));
     }
 
-    @Override
-    public File save(IFileData data) throws IOException {
-        final int[][][][] production = data.getProduction();
+    private static StringBuilder getStringBuilder(Object array, String[]... stuff) {
+        StringBuilder sb = new StringBuilder("<data>");
+        fillStringBuilder(array, sb, 0, stuff);
+        sb.append("</data>");
+        return sb;
+    }
 
-        final int tLen = production[0].length;
-        final int sLen = production[0][0].length;
-        final int zLen = production[0][0][0].length;
-        fillInArrays(tLen, sLen, zLen);
+    private static void fillStringBuilder(Object array, StringBuilder sb, int index, String[]... stuff) {
+        try {
+            Object[] arr = (Object[]) array;
+            for (int i = 0; i < arr.length; i++) {
+                sb.append(String.format("<%s>", stuff[index][i]));
+                fillStringBuilder(arr[i], sb, index + 1, stuff);
+                sb.append(String.format("</%s>", stuff[index][i]));
+            }
+        } catch (ClassCastException e) {
+            int[] arr = (int[]) array;
+            String[] shit = stuff[index];
 
+            for (int i = 0; i < arr.length; i++) {
+                sb.append(String.format("<%s>%d</%s>", shit[i], arr[i], shit[i]));
+            }
+        }
+    }
+
+    private StringBuilder getProduction(int[][][][] production) {
+        int zLen = production[0][0][0].length;
+        int sLen = production[0][0].length;
+        int tLen = production[0].length;
+
+        // root
         StringBuilder sb = new StringBuilder("<data>");
         for (int i = 0; i < production.length; i++) {
+
+            // index dne
             sb.append(String.format("<den-%d>", i));
             for (int j = 0; j < tLen; j++) {
+
+                // tovarny
                 sb.append(String.format("<%s>", tovarny[j]));
                 for (int k = 0; k < sLen; k++) {
-                    sb.append(String.format("<%s>", supermarkety[j]));
+
+                    // supermarkety
+                    sb.append(String.format("<%s>", supermarkety[k]));
                     for (int l = 0; l < zLen; l++) {
-                        sb.append(String.format("<%s>", zbozi[j]));
-                        sb.append(production[i][j][k][l]);
-                        sb.append(String.format("</%s>", zbozi[j]));
+
+                        // zbozi
+                        sb.append(String.format("<%s>", zbozi[l]));
+                        final int aa = production[i][j][k][l];
+                        sb.append(aa);
+                        sb.append(String.format("</%s>", zbozi[l]));
                     }
-                    sb.append(String.format("</%s>", supermarkety[j]));
+                    sb.append(String.format("</%s>", supermarkety[k]));
                 }
                 sb.append(String.format("</%s>", tovarny[j]));
             }
             sb.append(String.format("</den-%d>", i));
         }
         sb.append("</data>");
-        final File f = new File("test.xml");
+        return sb;
+    }
+
+    @Override
+    public File save(IFileData data) throws IOException {
+        final int[][][][] production = data.getProduction();
+        final int tLen = production[0].length;
+        final int sLen = production[0][0].length;
+        final int zLen = production[0][0][0].length;
+        fillInArrays(tLen, sLen, zLen);
+
+        StringBuilder sb = getProduction(production);
+
+        final File f = new File("production.xml");
         if (!f.exists()) {
             f.createNewFile();
         }
         try (FileWriter fw = new FileWriter(f)) {
             fw.write(sb.toString());
         }
+
         return f;
     }
+
 }
