@@ -54,8 +54,14 @@ public class Simulation {
      */
     public final int totalDemand;
 
+    /**
+     * data všech dnů agoritmu
+     */
     public final DayData[] daysData;
 
+    /**
+     * čas simulace
+     */
     public final long[] timeBenchmark;
 
     // konstruktor
@@ -96,6 +102,7 @@ public class Simulation {
     private int currentDay = 0;
     public int indexLastDay;
     public boolean simSuccessful = true;
+    public boolean simEnd = false;
 
     /**
      * Simuluj následující den simulace
@@ -104,6 +111,7 @@ public class Simulation {
      */
     public DayData simulateNextDay() {
         if (currentDay > indexLastDay) {
+            simEnd = true;
             return null;
         }
 
@@ -126,6 +134,11 @@ public class Simulation {
         return result;
     }
 
+    /**
+     * Simuluje zbylé dny simulace nebo všechny dny
+     *
+     * @return data dnů simulace
+     */
     public DayData[] simulateRestOfDays() {
         int start = currentDay;
         for (int i = currentDay; i <= indexLastDay; i++) {

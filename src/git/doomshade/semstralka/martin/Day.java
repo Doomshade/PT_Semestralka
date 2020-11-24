@@ -65,6 +65,7 @@ public class Day {
         boolean stockStatus = isNegativeStock();
         if (!stockStatus) {
             simulation.simSuccessful = false;
+            simulation.simEnd = true;
             simulation.indexLastDay = simDay;
         }
 
@@ -198,7 +199,7 @@ public class Day {
             MODI modi = new MODI(res, tf.costMatrix);
             boolean optimalSuccesful = modi.calculateMODI();
             if (!optimalSuccesful) {
-                tf.optimSolution = null;
+                tf.optimSolution = Arrays.copyOf(tf.solution, tf.solution.length);
             } else {
                 tf.optimSolution = Arrays.copyOf(res, res.length);
             }
@@ -273,6 +274,11 @@ public class Day {
         return res;
     }
 
+    /**
+     * Aktualizuje zásoby supermarketů pro projetí algoritmu a rozvezení zásob
+     *
+     * @param transportPaths matice přepravy
+     */
     private void updateStocks(int[][][] transportPaths) {
         for (int z = 0; z < transportPaths.length; z++) {
             for (int d = 0; d < transportPaths[0].length; d++) {
@@ -283,6 +289,11 @@ public class Day {
         }
     }
 
+    /**
+     * Zkontroluje zda zásoby supermarketů jsou nezáporné (záporné znamená, že chybí zboží po rozvozu)
+     *
+     * @return true -> pokud negativni jinak false
+     */
     private boolean isNegativeStock() {
         for (int z = 0; z < stocksAfterCheck.length; z++) {
             for (int s = 0; s < stocksAfterCheck[0].length; s++) {

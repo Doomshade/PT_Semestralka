@@ -3,6 +3,7 @@ package git.doomshade.semstralka;
 import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.martin.DayData;
 import git.doomshade.semstralka.martin.Simulation;
+import git.doomshade.semstralka.martin.gui.App;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,14 +72,16 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
-        String filePath = "C:\\Users\\jakub\\Downloads\\PT\\test_optim.txt";
+        Main.LOGGER.setLevel(Level.WARNING);
+        String filePath = "C:\\Users\\jakub\\Downloads\\PT\\real_small.txt";
         Storage storage = read(new File(filePath));
 
+        App app = new App();
+        app.startApp();
+
         //--
-        Simulation matrix = new Simulation(storage);
-        DayData[] data = matrix.simulateRestOfDays();
-        System.out.println("HI");
-        //data.getTransportationMatrices();
+        //Simulation matrix = new Simulation(storage);
+        //matrix.simulateRestOfDays();
 
         //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
         //System.out.println(Arrays.stream(data.optimalPrice).sum());

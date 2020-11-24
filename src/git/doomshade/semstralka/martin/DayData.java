@@ -29,9 +29,13 @@ public class DayData {
      * matice přepravy pro všehcny zboží
      */
     private final int[][][] arcMatrix;
-
+    /**
+     * zásoby
+     */
     private final int[][] stocks;
-
+    /**
+     * byl den provede úspěšný?
+     */
     private final boolean daySuccessful;
 
     /**
@@ -134,14 +138,29 @@ public class DayData {
         return optimalPrice;
     }
 
+    /**
+     * Vrátí zásoby
+     *
+     * @return zásoby
+     */
     public int[][] getStocks() {
         return stocks;
     }
 
+    /**
+     * Byl den úspěšný?
+     *
+     * @return true -> pokud ano, jinak ne
+     */
     public boolean isDaySuccessful() {
         return daySuccessful;
     }
 
+    /**
+     * Vrátí tf z průchodu algoritmu
+     *
+     * @return tf z průchodu algoritmu
+     */
     public TransportationForm[] getTransportationForms() {
         return transportationForms;
     }
