@@ -1,19 +1,28 @@
 package git.doomshade.semstralka.martin.gui;
 
-import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.martin.Simulation;
 
+/**
+ * Vytvoří GUI
+ *
+ * @author Martin Jakubašek
+ */
 public class App {
 
-    private SimulationWindow sw;
     private Simulation simulation;
 
+    /**
+     * Zahájí GUI
+     */
     public void startApp() {
         initGUI();
     }
 
+    /**
+     * Init GUI
+     */
     private void initGUI() {
-        sw = new SimulationWindow(simulation);
+        SimulationWindow sw = new SimulationWindow(simulation);
 
 
         sw.getFrame().setVisible(true);

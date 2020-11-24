@@ -5,16 +5,17 @@ import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.martin.DayData;
 import git.doomshade.semstralka.martin.Simulation;
 
-import javax.print.DocFlavor;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
 
+/**
+ * GUI prvky simulace
+ *
+ * @author Martin Jakubašek
+ */
 public class SimulationWindow {
 
     private final JFrame frame;
@@ -33,6 +34,11 @@ public class SimulationWindow {
         frame = create();
     }
 
+    /**
+     * Vrátí GUI okno
+     *
+     * @return GUI okno
+     */
     public JFrame getFrame() {
         return this.frame;
     }
@@ -41,6 +47,9 @@ public class SimulationWindow {
 
     //-- nacteni souboru
 
+    /**
+     * Načte složku
+     */
     private JPanel getFileLoader() {
         JPanel panel = new JPanel();
 
@@ -65,6 +74,11 @@ public class SimulationWindow {
         return panel;
     }
 
+    /**
+     * Načte složku
+     *
+     * @param is složka
+     */
     private void isFileLoaded(boolean is) {
         enableBtns(is);
         if (is) {
@@ -85,11 +99,21 @@ public class SimulationWindow {
     private JTextArea console;
     private JButton[] controlBtns;
 
+    /**
+     * Změní ukazatel dne
+     *
+     * @param day ukazatel dne
+     */
     private void changeCurrentDay(int day) {
         currentDay.setText("Den simulace: " + (day + offset));
         currentDay.paintImmediately(currentDay.getVisibleRect());
     }
 
+    /**
+     * Zapne/Vypne tlačítka
+     *
+     * @param isEnabled Zapne/Vypne tlačítka
+     */
     private void enableBtns(boolean isEnabled) {
         for (JButton btn : controlBtns) {
             btn.setEnabled(isEnabled);
@@ -98,6 +122,11 @@ public class SimulationWindow {
         }
     }
 
+    /**
+     * Vytvoří UI
+     *
+     * @return UI
+     */
     private JFrame create() {
         JFrame jFrame = new JFrame();
 
@@ -117,6 +146,11 @@ public class SimulationWindow {
         return jFrame;
     }
 
+    /**
+     * Vrátí info o dni
+     *
+     * @return info o dni
+     */
     private JPanel getSimInfo() {
         JPanel root = new JPanel();
         root.setLayout(new GridLayout(0, 2));
@@ -135,6 +169,11 @@ public class SimulationWindow {
         return root;
     }
 
+    /**
+     * Vrátí info o dni
+     *
+     * @return info o dni
+     */
     private JPanel getCurrDayInfo() {
         JPanel root = new JPanel();
 
@@ -158,6 +197,11 @@ public class SimulationWindow {
         return root;
     }
 
+    /**
+     * Vytvoří prostřední panel
+     *
+     * @return prostřední panel
+     */
     private JPanel createMiddlePanel() {
         JPanel root = new JPanel();
         root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
@@ -168,6 +212,11 @@ public class SimulationWindow {
         return root;
     }
 
+    /**
+     * Vytvoří dolní panel
+     *
+     * @return dolní panel
+     */
     private JPanel createSouthPanel() {
         JPanel root = new JPanel();
         root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
@@ -185,6 +234,11 @@ public class SimulationWindow {
         return root;
     }
 
+    /**
+     * Vytvoří tlačítka
+     *
+     * @return tlačítka
+     */
     private JPanel getBtns() {
 
         JPanel buttons = new JPanel();
@@ -284,6 +338,9 @@ public class SimulationWindow {
 
     //-- text
 
+    /**
+     * Update konzole
+     */
     private void chageConsoleOutput() {
         String output = getPrice();
 
@@ -299,6 +356,11 @@ public class SimulationWindow {
         console.paintImmediately(currentDay.getVisibleRect());
     }
 
+    /**
+     * Vrátí cenu
+     *
+     * @return cena
+     */
     private String getPrice() {
         String output = "--Cena--";
         DayData currDay = simulation.daysData[simulation.getCurrentDay() - 1 + offset];
@@ -311,19 +373,26 @@ public class SimulationWindow {
 
         int priceOfSim = 0;
         for (DayData data : simulation.daysData) {
-            if (data == null)
+            if (data == null) {
                 continue;
+            }
             priceOfSim += Arrays.stream(data.optimalPrice).sum();
         }
 
-        if (!simulation.simEnd)
+        if (!simulation.simEnd) {
             output += "\n Celková cena přepravy pro simulované dny: " + priceOfSim;
-        else
+        } else {
             output += "\n Celková cena přepravy: " + priceOfSim;
+        }
 
         return output;
     }
 
+    /**
+     * Vrátí přepravu
+     *
+     * @return přeprava
+     */
     private String getTransportRoutes() {
         DayData currDay = simulation.daysData[simulation.getCurrentDay() - 1 + offset];
         if (currDay == null) {
@@ -335,9 +404,10 @@ public class SimulationWindow {
         for (int d = 0; d < routes[0].length; d++) {
             for (int s = 0; s < routes[0][0].length; s++) {
                 for (int z = 0; z < routes.length; z++) {
-                    if (routes[z][d][s] <= 0)
+                    if (routes[z][d][s] <= 0) {
                         continue;
-                    output.append("\n továrna" + d + "---[" + routes[z][d][s] + "ks zboží" + z + "]---> supermarket" + s);
+                    }
+                    output.append("\n továrna").append(d).append("---[").append(routes[z][d][s]).append("ks zboží").append(z).append("]---> supermarket").append(s);
                 }
             }
         }
@@ -345,6 +415,11 @@ public class SimulationWindow {
         return String.valueOf(output);
     }
 
+    /**
+     * Vrátí zásoby
+     *
+     * @return zásoby
+     */
     private String getStocks() {
         DayData currDay = simulation.daysData[simulation.getCurrentDay() - 1 + offset];
         if (currDay == null) {
@@ -355,13 +430,18 @@ public class SimulationWindow {
         int[][] stocks = currDay.getStocks();
         for (int s = 0; s < stocks[0].length; s++) {
             for (int z = 0; z < stocks.length; z++) {
-                output.append("\n supermarket").append(s).append(" zásoby zboží").append(z + ": ").append(stocks[z][s]);
+                output.append("\n supermarket").append(s).append(" zásoby zboží").append(z).append(": ").append(stocks[z][s]);
             }
         }
 
         return String.valueOf(output);
     }
 
+    /**
+     * Vrátí zásoby negativní
+     *
+     * @return zásoby negativní
+     */
     private String getNegativeStocks() {
         DayData currDay = simulation.daysData[simulation.getCurrentDay() - 1 - offset];
         if (currDay == null) {
@@ -373,7 +453,7 @@ public class SimulationWindow {
         for (int s = 0; s < stocks[0].length; s++) {
             for (int z = 0; z < stocks.length; z++) {
                 if (stocks[z][s] < 0) {
-                    output.append("\n supermarket").append(s).append(" zásoby zboží").append(z + ": ").append(stocks[z][s]);
+                    output.append("\n supermarket").append(s).append(" zásoby zboží").append(z).append(": ").append(stocks[z][s]);
                 }
             }
         }
