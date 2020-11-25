@@ -1,6 +1,6 @@
 package git.doomshade.semstralka.martin;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Reprezentuje tvar přepravního problému,
@@ -9,8 +9,8 @@ import java.util.ArrayList;
  * @author Martin Jakubašek
  */
 public class TransportationForm {
-    final ArrayList<Entity> supermarkets;
-    final ArrayList<Entity> factories;
+    final List<Entity> supermarkets;
+    final List<Entity> factories;
     final int[][] costMatrix;
 
     /**
@@ -26,7 +26,7 @@ public class TransportationForm {
      * @param factories    továrny
      * @param costMatrix   matice ceny přepravy
      */
-    public TransportationForm(ArrayList<Entity> supermarkets, ArrayList<Entity> factories, int[][] costMatrix) {
+    public TransportationForm(List<Entity> supermarkets, List<Entity> factories, int[][] costMatrix) {
         this.supermarkets = supermarkets;
         this.factories = factories;
         this.costMatrix = costMatrix;
