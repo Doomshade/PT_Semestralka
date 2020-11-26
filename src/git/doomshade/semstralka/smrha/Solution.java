@@ -3,7 +3,7 @@ package git.doomshade.semstralka.smrha;
 import git.doomshade.semstralka.Main;
 
 /**
- * Solution pro tento problém
+ * Abstraktní třída různých řešení pro tento problém
  *
  * @author Jakub Šmrha
  * @version 1.0 (27.10.2020)
@@ -31,6 +31,9 @@ public abstract class Solution {
     private int totalSupply, totalDemand, totalCost;
 
 
+    /**
+     * Značí, zda problém byl již už předtím vyřešen
+     */
     private boolean solved = false;
 
     /**
@@ -90,7 +93,7 @@ public abstract class Solution {
 
         // logneme si totalSupply a demand pro zrychlení programu
         // program nemusí pokračovat, pokud je supply nebo demand nulový
-        // TODO implementace /\
+        // TODO implementace ^
         totalSupply -= supply;
         totalDemand -= demand;
 
@@ -164,6 +167,7 @@ public abstract class Solution {
      * Vyřeší problém a vrátí o něm data
      *
      * @return data
+     * @throws RuntimeException pokud byl již problém vyřešen
      */
     public final SolutionData solve() {
 

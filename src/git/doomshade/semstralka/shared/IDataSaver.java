@@ -14,6 +14,7 @@ public interface IDataSaver {
      *
      * @param data data, která se mají uložit
      * @return vytvořenou <b>SLOŽKU</b>, uvnitř kterých jsou soubory s daty
+     * @throws IOException pokud se nepodaří uložit data
      */
     File save(IFileData data) throws IOException;
 }
