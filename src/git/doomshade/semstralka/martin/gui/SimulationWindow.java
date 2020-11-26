@@ -4,6 +4,8 @@ import git.doomshade.semstralka.Main;
 import git.doomshade.semstralka.impl.graph.Storage;
 import git.doomshade.semstralka.martin.DayData;
 import git.doomshade.semstralka.martin.Simulation;
+import git.doomshade.semstralka.martin.SimulationData;
+import git.doomshade.semstralka.smrha.save.DataSaver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,7 +55,7 @@ public class SimulationWindow {
     private JPanel getFileLoader() {
         JPanel panel = new JPanel();
 
-        JButton openFCH = new JButton("vybrat soubour");
+        JButton openFCH = new JButton("Vybrat soubor");
         openFCH.addActionListener(actionEvent -> {
             JFileChooser fileChooser = new JFileChooser();
 
@@ -98,6 +100,7 @@ public class SimulationWindow {
     private JLabel[] simBasicInfo;
     private JTextArea console;
     private JButton[] controlBtns;
+    private JButton fileSaver;
 
     /**
      * Změní ukazatel dne
@@ -137,7 +140,10 @@ public class SimulationWindow {
 
         jFrame.setLayout(new BorderLayout());
 
-        jFrame.add(getFileLoader(), BorderLayout.NORTH);
+        JPanel panel = new JPanel();
+        panel.add(getFileLoader());
+        panel.add(getFinalBtns());
+        jFrame.add(panel, BorderLayout.NORTH);
 
         jFrame.add(createSouthPanel(), BorderLayout.SOUTH);
 
@@ -235,6 +241,33 @@ public class SimulationWindow {
     }
 
     /**
+     * Vytvoří tlačítko pro sobour
+     *
+     * @return tlačitko pro vytváření souboru$
+     */
+    private JPanel getFinalBtns() {
+        JPanel root = new JPanel();
+
+        fileSaver = new JButton("Vytvoř výstupní soubor");
+        root.add(fileSaver);
+        fileSaver.setEnabled(false);
+
+        fileSaver.addActionListener(
+                actionEvent -> {
+                    DataSaver dataSaver = new DataSaver();
+                    SimulationData simulationData = new SimulationData(simulation);
+                    try {
+                        File file = dataSaver.save(simulationData);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+
+        return root;
+    }
+
+    /**
      * Vytvoří tlačítka
      *
      * @return tlačítka
@@ -256,6 +289,7 @@ public class SimulationWindow {
                     controlBtns[2].setEnabled(false);
                     controlBtns[3].setEnabled(false);
                     controlBtns[4].setEnabled(false);
+                    fileSaver.setEnabled(true);
                 }
             } else {
                 offset++;
@@ -289,6 +323,7 @@ public class SimulationWindow {
                 ((Timer) e.getSource()).stop();
                 controlBtns[1].setEnabled(true);
                 controlBtns[3].setEnabled(false);
+                fileSaver.setEnabled(true);
             }
         });
         timer.setRepeats(true);
@@ -319,6 +354,7 @@ public class SimulationWindow {
                 controlBtns[4].setEnabled(false);
                 controlBtns[3].setEnabled(false);
                 controlBtns[2].setEnabled(false);
+                fileSaver.setEnabled(true);
             }
         });
 
@@ -348,6 +384,16 @@ public class SimulationWindow {
             output += " \n\n Simulace selhala! Nedostatek zboží pro uzásobení supermarketů pro " + simulation.getCurrentDay() + " den simulace \n";
             output += getNegativeStocks();
         }
+        if (simulation.simEnd) {
+            output += " \n\n Simulace dokončena!";
+            if (!simulation.simSuccessful) {
+                output += " Simulace neúspěšná";
+            } else {
+                output += " Simulace úspěšná";
+            }
+
+
+        }
 
         output += "\n\n" + getTransportRoutes();
         output += "\n\n" + getStocks() + "\n";
@@ -362,14 +408,14 @@ public class SimulationWindow {
      * @return cena
      */
     private String getPrice() {
-        String output = "--Cena--";
+        StringBuilder output = new StringBuilder("--Cena--");
         DayData currDay = simulation.daysData[simulation.getCurrentDay() - 1 + offset];
         if (currDay == null) {
             return "" + simulation.getCurrentDay();
         }
 
         int currPrice = Arrays.stream(currDay.optimalPrice).sum();
-        output += "\n cena přepravy pro aktuální den: " + currPrice;
+        output.append("\n cena přepravy pro aktuální den: ").append(currPrice);
 
         int priceOfSim = 0;
         for (DayData data : simulation.daysData) {
@@ -380,12 +426,23 @@ public class SimulationWindow {
         }
 
         if (!simulation.simEnd) {
-            output += "\n Celková cena přepravy pro simulované dny: " + priceOfSim;
+            output.append("\n Celková cena přepravy pro simulované dny: ").append(priceOfSim);
         } else {
-            output += "\n Celková cena přepravy: " + priceOfSim;
+            output.append("\n Celková cena přepravy: ").append(priceOfSim);
         }
 
-        return output;
+        if (simulation.simEnd) {
+            int i = 0;
+            for (DayData data : simulation.daysData) {
+                i++;
+                if (data == null) {
+                    continue;
+                }
+                output.append("\n Cena přepravy pro den ").append(i).append(": ").append(Arrays.stream(data.optimalPrice).sum());
+            }
+        }
+
+        return output.toString();
     }
 
     /**
@@ -407,7 +464,14 @@ public class SimulationWindow {
                     if (routes[z][d][s] <= 0) {
                         continue;
                     }
-                    output.append("\n továrna").append(d).append("---[").append(routes[z][d][s]).append("ks zboží").append(z).append("]---> supermarket").append(s);
+                    String vehicle = "na kole";
+                    if (routes[z][d][s] >= 5) {
+                        vehicle = "autem";
+                    }
+                    if (routes[z][d][s] >= 10) {
+                        vehicle = "vlakem";
+                    }
+                    output.append("\n továrna").append(d).append("---[").append(routes[z][d][s]).append("ks zboží").append(z).append("]---> supermarket").append(s).append(" (").append(vehicle).append(")");
                 }
             }
         }

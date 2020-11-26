@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class CycleDetection {
 
+    /** matice kde mame detekovat cyklus */
     private final double[][] matrix;
 
     /**
@@ -23,7 +24,14 @@ public class CycleDetection {
 
     //--
 
-    private int xTar, yTar;
+    /**
+     * x
+     */
+    private int xTar;
+    /**
+     * y
+     */
+    private int yTar;
 
     /**
      * Metoda detekuje, zda existuje cyklus v matici ze zadané pozice
@@ -164,8 +172,7 @@ public class CycleDetection {
      * Vrátí výsledné pole cyklu z rekurzivního algoritmu
      *
      * @param yCoord souřadnice y
-     * @param x souřadnice x
-     *
+     * @param x      souřadnice x
      * @return výsledné pole souřadnic prvků cyklu nebo null
      */
     private List<int[]> getRes(int yCoord, int x) {

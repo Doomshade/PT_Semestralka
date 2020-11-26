@@ -9,14 +9,18 @@ import java.util.List;
  * @author Martin Jakubašek
  */
 public class TransportationForm {
+    /** supermarkety */
     final List<Entity> supermarkets;
+    /** továrny */
     final List<Entity> factories;
+    /** matice cen */
     final int[][] costMatrix;
 
     /**
      * řešení
      */
     public double[][] solution;
+    /** optimální řešení */
     public double[][] optimSolution;
 
     /**
