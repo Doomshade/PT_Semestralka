@@ -145,19 +145,20 @@ public class VAMSolution extends Solution {
     private void addDeleted(DeletedPart deletedPart, int x, int y) {
         switch (deletedPart) {
 
-            case ROW -> {
+            case ROW:
                 // posuneme x na začátek pole
                 x = x - (x % costMatrix[0].length);
                 for (int i = 0; i < costMatrix[0].length; i++) {
                     deletedIndexes.add(mapToMatrix(x + i, y));
                 }
-            }
-            case COLUMN -> {
+                break;
+
+            case COLUMN:
                 for (int i = 0; i < costMatrix.length; i++) {
                     deletedIndexes.add(mapToMatrix(x, i));
                 }
-            }
-            case BOTH -> {
+                break;
+            case BOTH:
 
                 // trocha kopírování :/ not proud of this, ale jsem už línej :D
                 x = x - (x % costMatrix[0].length);
@@ -167,7 +168,7 @@ public class VAMSolution extends Solution {
                 for (int i = 0; i < costMatrix.length; i++) {
                     deletedIndexes.add(mapToMatrix(x, i));
                 }
-            }
+                break;
         }
     }
 
