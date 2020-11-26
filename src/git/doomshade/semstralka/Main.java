@@ -1,14 +1,16 @@
 package git.doomshade.semstralka;
 
 import git.doomshade.semstralka.impl.graph.Storage;
+import git.doomshade.semstralka.martin.DayData;
+import git.doomshade.semstralka.martin.Simulation;
+import git.doomshade.semstralka.martin.gui.App;
+import git.doomshade.semstralka.smrha.Solution;
+import git.doomshade.semstralka.smrha.VAMSolution;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +44,7 @@ public class Main {
     /**
      * Main...
      *
-     * @param args args
+     * @param args
      * @throws IOException pokud nastane chyba při čtení souboru
      */
     public static void main(String[] args) throws IOException {
@@ -72,6 +74,21 @@ public class Main {
                 graph.print(System.out);
             }
         });*/
+
+        Main.LOGGER.setLevel(Level.WARNING);
+        String filePath = "C:\\Users\\jakub\\Downloads\\PT\\real_small.txt";
+        Storage storage = read(new File(filePath));
+
+        App app = new App();
+        app.startApp();
+
+        //--
+        //Simulation matrix = new Simulation(storage);
+        //matrix.simulateRestOfDays();
+
+        //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
+        //System.out.println(Arrays.stream(data.optimalPrice).sum());
+        //--
 /*
         LOGGER.setLevel(Level.INFO);
         String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_small.txt";
@@ -107,13 +124,6 @@ public class Main {
         return data;
     }
 
-    /**
-     * Přečte soubor a vrátí data
-     *
-     * @param file soubor, ze kterého se má číst
-     * @return data ze souboru
-     * @throws IOException pokud nastane chyba při čtení ze souboru
-     */
     public static Storage read(File file) throws IOException {
 
         LOGGER.fine(file.getName());
