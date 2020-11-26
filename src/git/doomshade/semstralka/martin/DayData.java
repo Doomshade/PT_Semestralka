@@ -4,17 +4,27 @@ import java.util.Arrays;
 
 /**
  * Třída obsahuje informace z 1 dne po vykonání algoritmu.
- * Obsahuje -> matici ceny přepravy
- * -> matici prvotní přepravy každého zboží
- * -> matici optimální přepravy každého zboží
- * -> celkovou cenu přepravy prvotního a optimálního řešení
+ * Obsahuje:
+ * matici ceny přepravy
+ * matici prvotní přepravy každého zboží
+ * matici optimální přepravy každého zboží
+ * celkovou cenu přepravy prvotního a optimálního řešení
  *
  * @author Martin Jakubašek
  */
 public class DayData {
 
+    /**
+     * tf
+     */
     private final TransportationForm[] transportationForms;
+    /**
+     * továrny
+     */
     private final int factories;
+    /**
+     * supermarkety
+     */
     private final int supermarkets;
 
     /**
@@ -42,6 +52,10 @@ public class DayData {
      * Instance obsahuje data z 1 dne algoritmu
      *
      * @param transportationForms data z přepravních problému pro všechna zboží
+     * @param daySuccessful       den uspěšný
+     * @param factories           továrny
+     * @param stocks              zásoby
+     * @param supermarkets        supermarkety
      */
     public DayData(TransportationForm[] transportationForms, int supermarkets, int factories, int[][] stocks, boolean daySuccessful) {
         this.transportationForms = transportationForms;
@@ -53,7 +67,13 @@ public class DayData {
         this.feasiblePrice = getFeasiblePrice();
         this.optimalPrice = getOptimalPrice();
 
-        this.stocks = stocks;
+        //this.stocks = Arrays.copyOf(stocks, stocks.length);
+        this.stocks = new int[stocks.length][stocks[0].length];
+        for (int i = 0; i < stocks.length; i++) {
+            for (int j = 0; j < stocks[0].length; j++) {
+                this.stocks[i][j] = stocks[i][j];
+            }
+        }
         this.daySuccessful = daySuccessful;
     }
 

@@ -9,6 +9,7 @@ import java.util.Arrays;
  */
 public class Simulation {
 
+    /** načtená data */
     public final Storage storage;
 
     // upravená vstupní data
@@ -100,8 +101,17 @@ public class Simulation {
      * Den ve kterém se nachází simulace
      */
     private int currentDay = 0;
+    /**
+     * index posledního dne
+     */
     public int indexLastDay;
+    /**
+     * simulace uspešná
+     */
     public boolean simSuccessful = true;
+    /**
+     * konec simulace
+     */
     public boolean simEnd = false;
 
     /**
