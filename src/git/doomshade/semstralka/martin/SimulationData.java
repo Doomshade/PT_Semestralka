@@ -12,6 +12,7 @@ import java.util.Arrays;
  */
 public class SimulationData implements IFileData {
 
+    /** simulace */
     private final Simulation simulation;
 
     /**
@@ -31,6 +32,9 @@ public class SimulationData implements IFileData {
      */
     private final int[][][] overProduction;
 
+    /**
+     * konstruktor
+     */
     public SimulationData(Simulation simulation) {
 
         this.simulation = simulation;
@@ -50,9 +54,9 @@ public class SimulationData implements IFileData {
      */
     private int[][][][] createProduction() {
 
-        int[][][][] production = new int[simulation.daysData.length][simulation.storage.pocetTovaren][simulation.storage.pocetSupermarketu][simulation.storage.pocetDruhuZbozi];
+        int[][][][] production = new int[simulation.indexLastDay + 1][simulation.storage.pocetTovaren][simulation.storage.pocetSupermarketu][simulation.storage.pocetDruhuZbozi];
 
-        for (int day = 0; day < simulation.daysData.length; day++) {
+        for (int day = 0; day < simulation.indexLastDay + 1/*simulation.daysData.length*/; day++) {
             DayData currDay = simulation.daysData[day];
             if (currDay != null) {
                 int[][][] transports = currDay.getTransportationMatrices(); // [z][d][s]
@@ -76,9 +80,9 @@ public class SimulationData implements IFileData {
      * @return matice zásob supermarketů
      */
     private int[][][] createSupermarketOverview() {
-        int[][][] supOverview = new int[simulation.daysData.length][simulation.storage.pocetSupermarketu][simulation.storage.pocetDruhuZbozi];
+        int[][][] supOverview = new int[simulation.indexLastDay + 1][simulation.storage.pocetSupermarketu][simulation.storage.pocetDruhuZbozi];
 
-        for (int day = 0; day < simulation.daysData.length; day++) {
+        for (int day = 0; day < simulation.indexLastDay + 1; day++) {
             DayData currDay = simulation.daysData[day];
             if (currDay != null) {
                 int[][] stocks = currDay.getStocks(); // [z][s]
@@ -99,9 +103,9 @@ public class SimulationData implements IFileData {
      * @return matice over produkce továren
      */
     private int[][][] createOverProduction() {
-        int[][][] overProd = new int[simulation.daysData.length][simulation.storage.pocetTovaren][simulation.storage.pocetDruhuZbozi];
+        int[][][] overProd = new int[simulation.indexLastDay + 1][simulation.storage.pocetTovaren][simulation.storage.pocetDruhuZbozi];
 
-        for (int day = 0; day < simulation.daysData.length; day++) {
+        for (int day = 0; day < simulation.indexLastDay + 1; day++) {
             DayData currDay = simulation.daysData[day];
             if (currDay != null) {
                 int[][][] transports = currDay.getTransportationMatrices(); // [z][d][s]

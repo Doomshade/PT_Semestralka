@@ -6,7 +6,13 @@ package git.doomshade.semstralka.martin;
  * @author Martin Jakubašek
  */
 public class Entity {
+    /**
+     * index pozice
+     */
     public final int index;
+    /**
+     * hodnota
+     */
     public final int value;
 
     /**

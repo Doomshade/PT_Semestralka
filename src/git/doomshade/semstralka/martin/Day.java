@@ -194,9 +194,15 @@ public class Day {
             // optimal feasible solution
 
             double[][] res = convertToDouble(data.uplneJedno);
-            tf.solution = Arrays.copyOf(res, res.length);
+
+            //tf.solution = Arrays.copyOf(res, res.length);
+            tf.solution = new double[res.length][res[0].length];
+            for (int i = 0; i < res.length; i++) {
+                tf.solution[i] = Arrays.copyOf(res[i], res[i].length);
+            }
 
             MODI modi = new MODI(res, tf.costMatrix);
+
             boolean optimalSuccesful = modi.calculateMODI();
             if (!optimalSuccesful) {
                 tf.optimSolution = Arrays.copyOf(tf.solution, tf.solution.length);

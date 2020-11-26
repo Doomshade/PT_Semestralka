@@ -32,7 +32,13 @@ public class MODI {
      */
     final int[][] costMatrix;
 
+    /**
+     * u
+     */
     final double[] u;
+    /**
+     * v
+     */
     final double[] v;
 
     /**
@@ -64,7 +70,13 @@ public class MODI {
     }
 
     //rozděl matici na 2 části -> alokovanou (hrany jsou používány pro přepravu) a nealokovanou část
+    /**
+     * allocated
+     */
     List<int[]> allocated;
+    /**
+     * unallocated
+     */
     List<int[]> unallocated;
 
     /**
@@ -143,6 +155,7 @@ public class MODI {
     /**
      * Najde (pokud existuje) největší zlepšení nepoužitých cest
      *
+     * @param netIncrease netincrease
      * @return koordinace lepší cesty (záporné číslo), 0 pokud není lepší cesta, nebo cenově stejná cesta
      */
     int[] findLargestNegativeIncrease(int[] netIncrease) {
