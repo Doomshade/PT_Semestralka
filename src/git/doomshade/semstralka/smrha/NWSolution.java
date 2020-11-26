@@ -1,7 +1,5 @@
 package git.doomshade.semstralka.smrha;
 
-import git.doomshade.semstralka.util.MatrixUtil;
-
 /**
  * Řešení north-west
  *
@@ -44,10 +42,17 @@ public class NWSolution extends Solution {
         // choose nám vrátí část, která byla smazána
         // na jejím základě pokračujeme v programu
         switch (choose(x, y)) {
-            case ROW -> northWest(x, y + 1);
-            case COLUMN -> northWest(x + 1, y);
-            case BOTH -> northWest(x + 1, y + 1);
-            default -> throw new RuntimeException("Failed to choose");
+            case ROW:
+                northWest(x, y + 1);
+                break;
+            case COLUMN:
+                northWest(x + 1, y);
+                break;
+            case BOTH:
+                northWest(x + 1, y + 1);
+                break;
+            default:
+                throw new RuntimeException("Failed to choose");
         }
     }
 }
