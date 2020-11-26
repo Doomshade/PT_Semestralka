@@ -257,7 +257,7 @@ public class SimulationWindow {
                     DataSaver dataSaver = new DataSaver();
                     SimulationData simulationData = new SimulationData(simulation);
                     try {
-                        File file = dataSaver.save(simulationData);
+                        dataSaver.save(simulationData);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

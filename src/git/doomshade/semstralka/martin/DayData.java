@@ -1,6 +1,5 @@
 package git.doomshade.semstralka.martin;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
