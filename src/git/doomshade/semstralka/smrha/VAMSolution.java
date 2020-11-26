@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
+ * Nedodělané řešení problému VAM metodou
+ *
  * @author Jakub Šmrha
- * @version 1.0 (31.10.2020)
+ * @version 0.0 (31.10.2020)
  */
 public class VAMSolution extends Solution {
 
@@ -56,6 +58,9 @@ public class VAMSolution extends Solution {
         VAM();
     }
 
+    /**
+     * Hlavní metoda řešení
+     */
     private void VAM() {
         // prvně resetneme costy
         // cost necháme na 0, mincost na max value

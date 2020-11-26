@@ -3,7 +3,7 @@ package git.doomshade.semstralka.impl;
 import git.doomshade.semstralka.adt.IValueHolder;
 
 /**
- * <p>>Implementace pro třídy, které drží určitou hodnotu ({@link Supermarket}, {@link Tovarna}
+ * <p>Implementace pro třídy, které drží určitou hodnotu ({@link Supermarket}, {@link Tovarna}
  * <p>Možná nebude třeba ani využít
  * @deprecated určo se nevyužije
  */

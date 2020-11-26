@@ -9,8 +9,20 @@ import java.util.Arrays;
  * @version 1.0 (28.10.2020)
  */
 public class SolutionData {
+
+    /**
+     * Třída, která byla použita pro řešení problému
+     */
     public final Class<? extends Solution> solutionClass;
+
+    /**
+     * Celková cena
+     */
     public final int totalCost;
+
+    /**
+     * Uhm
+     */
     public final int[][] uplneJedno;
 
 

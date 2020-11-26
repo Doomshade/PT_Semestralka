@@ -137,10 +137,9 @@ public class Storage {
 
     /**
      * Tato trida zaridi nemennost pole - nechceme nijak nikdy editovat raw data (kdyby nas to nekdy napadlo).
-     * Data jsou tedy accessible, ale pouze jejich kopie.
+     * Data jsou tedy accessible, ale pouze jejich kopie. Zatim not used
      *
      * @author Jakub Smrha
-     * @apiNote Zatim not used
      */
     public class Data {
 

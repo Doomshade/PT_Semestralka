@@ -3,6 +3,8 @@ package git.doomshade.semstralka.smrha;
 import java.util.*;
 
 /**
+ * Řešení mincost
+ *
  * @author Jakub Šmrha
  * @version 1.0 (27.10.2020)
  */
@@ -16,8 +18,8 @@ public class MinCostSolution extends Solution {
      * Hlavní konstruktor
      *
      * @param matrix matice cen
-     * @param supply     produkce
-     * @param demand     poptávka
+     * @param supply produkce
+     * @param demand poptávka
      */
     public MinCostSolution(int[][] matrix, int[] supply, int[] demand) {
         super(matrix, supply, demand);
@@ -38,6 +40,9 @@ public class MinCostSolution extends Solution {
         minCost();
     }
 
+    /**
+     * Hlavní metoda třídy
+     */
     private void minCost() {
 
         // pokud je total supply nebo total demand nulový, můžeme přestat pokračovat

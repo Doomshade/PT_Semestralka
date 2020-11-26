@@ -76,8 +76,8 @@ public class Main {
         });*/
 
         Main.LOGGER.setLevel(Level.WARNING);
-        String filePath = "C:\\Users\\jakub\\Downloads\\PT\\real_small.txt";
-        Storage storage = read(new File(filePath));
+        //String filePath = "C:\\Users\\jakub\\Downloads\\PT\\real_small.txt";
+        //Storage storage = read(new File(filePath));
 
         App app = new App();
         app.startApp();

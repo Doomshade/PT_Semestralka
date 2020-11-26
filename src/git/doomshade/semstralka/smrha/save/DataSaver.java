@@ -189,7 +189,7 @@ public class DataSaver implements IDataSaver {
 
     /**
      * Doplní rekurzivně do stringbuilderu data v XML formátu o matici.
-     * Např. production (4D pole) -><br> {@code <dny><tovarny><supermarkety><zbozi>VALUE</zbozi></supermarkety></tovarny></dny>}
+     * Např. production (4D pole)<br> {@code <dny><tovarny><supermarkety><zbozi>VALUE</zbozi></supermarkety></tovarny></dny>}
      *
      * @param array <b>int</b> pole/matice/data - zde je důležité, že je to matice/pole intů, value předpokládaná non-floating, přetypována na long
      * @param sb    current stringbuilder
