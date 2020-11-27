@@ -2,13 +2,15 @@ package git.doomshade.semstralka.smrha.save;
 
 import git.doomshade.semstralka.shared.IDataSaver;
 import git.doomshade.semstralka.shared.IFileData;
-import git.doomshade.semstralka.util.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Třída pro uložení dat do textové formy
@@ -108,7 +110,9 @@ public class DataSaver implements IDataSaver {
     private void fillNamesArrays(int tLen, int sLen, int zLen) throws IOException {
 
         // již inicializováno
-        if (tovarny != null) return;
+        if (tovarny != null) {
+            return;
+        }
 
         // +1 kvůli hlavičce v poli
         tovarny = new String[tLen + 1];
@@ -315,7 +319,7 @@ public class DataSaver implements IDataSaver {
         final int[][][] overProduction = data.getOverProduction();
         final long simulationLength = data.getSimulationLength();
         final int[][][] supermarketOverview = data.getSupermarketOverview();
-        final Pair<Integer, Integer[][]> noSolution = data.noSolutionData();
+        //final Pair<Integer, Integer[][]> noSolution = data.noSolutionData();
 
         // prvně doplníme defaultní jména
         // továrny

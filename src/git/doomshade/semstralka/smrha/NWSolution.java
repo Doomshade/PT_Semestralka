@@ -35,7 +35,9 @@ public class NWSolution extends Solution {
         // pokud neni, tak nechceme delat nic
         // také, pokud je total supply nebo demand nulový, nemá cenu pokračovat
         // if (!shouldContinue()) return;
-        if (x >= costMatrix[0].length || y >= costMatrix.length) return;
+        if (x >= costMatrix[0].length || y >= costMatrix.length) {
+            return;
+        }
 
         //MatrixUtil.searchIndex(costMatrix, MatrixUtil.HIGHEST_INTEGER, MatrixUtil.LOWEST_NUMBER);
 

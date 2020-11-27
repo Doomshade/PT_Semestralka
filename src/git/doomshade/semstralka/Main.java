@@ -1,11 +1,7 @@
 package git.doomshade.semstralka;
 
 import git.doomshade.semstralka.impl.graph.Storage;
-import git.doomshade.semstralka.martin.DayData;
-import git.doomshade.semstralka.martin.Simulation;
 import git.doomshade.semstralka.martin.gui.App;
-import git.doomshade.semstralka.smrha.Solution;
-import git.doomshade.semstralka.smrha.VAMSolution;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,32 +44,6 @@ public class Main {
      * @throws IOException pokud nastane chyba při čtení souboru
      */
     public static void main(String[] args) throws IOException {
-        /*
-        String path = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests";
-        String fileName = "real_large.txt";
-        //testRead(path, fileName);
-        /*testGraph(1, 20, graph -> {
-            graph.addEdge(new Edge(0, 5, -1));
-            graph.addEdge(new Edge(0, 15, 8));
-            graph.addEdge(new Edge(0, 2, 12));
-            graph.addEdge(new Edge(0, 3, 15));
-            graph.addEdge(new Edge(0, 4, 11));
-
-
-            graph.addEdge(new Edge(3, 1, 4));
-            graph.addEdge(new Edge(3, 2, 52));
-            graph.addEdge(new Edge(3, 4, 47));
-
-            System.out.println(graph.neighbours(0));
-
-            if (graph instanceof MatrixGraph) {
-
-                // chceme printnout celý graf
-                ((MatrixGraph) graph).print(System.out, false);
-            } else {
-                graph.print(System.out);
-            }
-        });*/
 
         Main.LOGGER.setLevel(Level.WARNING);
         //String filePath = "C:\\Users\\jakub\\Downloads\\PT\\real_small.txt";
@@ -89,39 +59,6 @@ public class Main {
         //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
         //System.out.println(Arrays.stream(data.optimalPrice).sum());
         //--
-/*
-        LOGGER.setLevel(Level.INFO);
-        String filePath = "C:\\Users\\Doomshade\\Desktop\\skull\\PT\\semestralka\\tests\\test_small.txt";
-        Storage storage = read(new File(filePath));
-
-
-        Simulation matrix = new Simulation(storage);
-        Solution solution = new VAMSolution(matrix.costMatrix, matrix.productionMatrix[0][0], matrix.demandMatrix[0][0]);
-        solution.solve();
-
-        DayData data = matrix.simulateNextDay();
-        data.getTransportationMatrices();
-
-        //System.out.println(Arrays.deepToString(data.getTransportationMatrices()));
-        System.out.println(Arrays.stream(data.optimalPrice).sum());
-        //*/
-    }
-
-    /**
-     * Testovací metoda pro čtení ze souboru
-     *
-     * @param path     cesta k souboru
-     * @param fileName jméno souboru
-     * @return data, které se přečetla ze souboru
-     * @throws IOException pokud nelze přečíst soubor
-     */
-    private static Storage testRead(String path, String fileName) throws IOException {
-        long time = System.currentTimeMillis();
-        final Storage data = read(new File(path, fileName));
-        time = System.currentTimeMillis() - time;
-
-        LOGGER.info("Reading " + fileName + " took " + (time / 1000d) + "s to read");
-        return data;
     }
 
     public static Storage read(File file) throws IOException {
@@ -185,6 +122,17 @@ public class Main {
         // teď přečteme celý soubor
         // scanner sám hodí exception, pokud bude špatný formát (vyskytne se string nebo špatný počet dat)
         // TODO předělat do listu
+        readData(itr, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni, cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi);
+
+        if (itr.hasNext()) {
+            throw new RuntimeException("Did not read all FFS");
+        }
+
+
+        return new Storage(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni);
+    }
+
+    private static void readData(Iterator<Integer> itr, int pocetTovaren, int pocetSupermarketu, int pocetDruhuZbozi, int pocetDni, int[] cenaPrevozu, int[] pocatecniZasoby, int[] produkceTovaren, int[] poptavkaZbozi) {
         for (int i = 0; i < pocetTovaren * pocetSupermarketu; i++) {
             cenaPrevozu[i] = itr.next();
 
@@ -201,45 +149,5 @@ public class Main {
         for (int i = 0; i < pocetSupermarketu * pocetDruhuZbozi * pocetDni; i++) {
             poptavkaZbozi[i] = itr.next();
         }
-
-        if (itr.hasNext()) {
-            throw new RuntimeException("Did not read all FFS");
-        }
-
-
-        return new Storage(cenaPrevozu, pocatecniZasoby, produkceTovaren, poptavkaZbozi, pocetTovaren, pocetSupermarketu, pocetDruhuZbozi, pocetDni);
     }
-
-    /*
-    // this ones correct
-        for (int i = 0; i < d; i++) {
-            for (int j = 0; j < s; j++) {
-                cenaPrevozu[i][j] = sc.nextInt();
-            }
-        }
-
-        // this ones correct
-        for (int i = 0; i < z; i++) {
-            for (int j = 0; j < s; j++) {
-                pocatecniZasoby[i][j] = sc.nextInt();
-            }
-        }
-
-        // TODO
-        // this ones wrong
-        for (int i = 0; i < d * s * t; i++) {
-            for (int j = 0; j < d; j++) {
-                produkceTovaren[i][j] = sc.nextInt();
-
-            }
-        }
-
-        // this ones wrong
-        for (int i = 0; i < d * s * t; i++) {
-            for (int j = 0; j < s; j++) {
-                poptavkaZbozi[i][j] = sc.nextInt();
-
-            }
-        }
-     */
 }

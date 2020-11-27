@@ -1,6 +1,5 @@
 package git.doomshade.semstralka.impl.graph;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
@@ -44,30 +43,6 @@ public class Storage {
         this.pocetSupermarketu = pocetSupermarketu;
         this.pocetDruhuZbozi = pocetDruhuZbozi;
         this.pocetDni = pocetDni;
-    }
-
-    /**
-     * Validuje input (není pravděpodobně nutný, ale just to make sure)
-     *
-     * @param fieldName s jakym variablem to porovnat (pointery pls :( ) (dny, druhy zbozi, produkce, poptavka)
-     * @param num       číslo, které má porovnat
-     * @throws IllegalArgumentException pokud je číslo větší než počet (dnů, druhu zbozi, ...)
-     */
-    private void validate(String fieldName, Number num) throws IllegalArgumentException {
-        short fieldValue;
-        try {
-            final Field declaredField = getClass().getDeclaredField(fieldName);
-            declaredField.setAccessible(true);
-            fieldValue = declaredField.getShort(this);
-        } catch (Exception e) {
-            // this should not happen, but should be logged someday
-            e.printStackTrace();
-            return;
-        }
-        final short val = num.shortValue();
-        if (val > fieldValue) {
-            throw new IllegalArgumentException(String.format("%s (%d) je příliš velké (max = %d)", fieldName, val, fieldValue));
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

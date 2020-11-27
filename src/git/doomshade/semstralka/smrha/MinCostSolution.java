@@ -52,7 +52,9 @@ public class MinCostSolution extends Solution {
         final Map.Entry<Integer, Collection<Integer>> entry = SUPPLY_INDEX_MAP.pollFirstEntry();
 
         // entry je prázdný, došli jsme pravědpodobně na konec (došly zásoby :( )
-        if (entry == null) return;
+        if (entry == null) {
+            return;
+        }
 
         final Collection<Integer> coll = entry.getValue();
         final Iterator<Integer> it = coll.iterator();
