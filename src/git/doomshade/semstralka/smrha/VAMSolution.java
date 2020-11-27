@@ -1,11 +1,5 @@
 package git.doomshade.semstralka.smrha;
 
-import git.doomshade.semstralka.Main;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-
 /**
  * Nedodělané řešení problému VAM metodou
  *
@@ -14,6 +8,7 @@ import java.util.HashSet;
  */
 public class VAMSolution extends Solution {
 
+    /*
     private final int[] rowCost;
     private final int[] minRowCost;
     private final int[] secondMinRowCost;
@@ -31,7 +26,7 @@ public class VAMSolution extends Solution {
     private final int[] columnCost;
     private final int[] minColumnCost;
     private final int[] secondMinColumnCost;
-
+*/
     /**
      * Hlavní konstruktor
      *
@@ -42,7 +37,7 @@ public class VAMSolution extends Solution {
     public VAMSolution(int[][] costMatrix, int[] supply, int[] demand) {
         super(costMatrix, supply, demand);
         // rowCost
-        this.rowCost = new int[costMatrix.length];
+        /*this.rowCost = new int[costMatrix.length];
         this.minRowCost = new int[costMatrix.length];
         this.secondMinRowCost = new int[costMatrix.length];
         this.columnCost = new int[costMatrix[0].length];
@@ -50,18 +45,18 @@ public class VAMSolution extends Solution {
         this.secondMinColumnCost = new int[costMatrix[0].length];
         Main.LOGGER.info(Arrays.deepToString(costMatrix));
         Main.LOGGER.info(Arrays.toString(supply));
-        Main.LOGGER.info(Arrays.toString(demand));
+        Main.LOGGER.info(Arrays.toString(demand));*/
     }
 
     @Override
     protected void solveProblem() {
-        VAM();
+        // TODO
     }
 
     /**
      * Hlavní metoda řešení
      */
-    private void VAM() {
+    /*private void VAM() {
         // prvně resetneme costy
         // cost necháme na 0, mincost na max value
         Arrays.fill(rowCost, 0);
@@ -113,6 +108,7 @@ public class VAMSolution extends Solution {
             }
         }
 
+
         // nyní musíme najít nejmenší číslo v řádku/sloupci a jeho index pro cache toho, co jsme za řádek/sloupec smazali (abychom ho skipovali)
         int leastCost = Integer.MAX_VALUE;
         int leastCostIndex = -1;
@@ -140,8 +136,9 @@ public class VAMSolution extends Solution {
 
         // zavoláme opět program
         VAM();
-    }
+    }*/
 
+    /*
     private void addDeleted(DeletedPart deletedPart, int x, int y) {
         switch (deletedPart) {
 
@@ -223,5 +220,5 @@ public class VAMSolution extends Solution {
             columnCost[i] = secondMinColumnCost[i] - minColumnCost[i];
         }
         return true;
-    }
+    }*/
 }

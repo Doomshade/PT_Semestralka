@@ -13,7 +13,8 @@ import java.util.function.BiPredicate;
  */
 public final class MatrixUtil {
 
-    private MatrixUtil(){}
+    private MatrixUtil() {
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Print metody
@@ -72,12 +73,13 @@ public final class MatrixUtil {
      * @throws IllegalArgumentException pokud nelze vytvořit z těchto čísel matici
      */
     private static int getYLen(int dataLen, int xLen) throws IllegalArgumentException {
-        if (dataLen % xLen != 0)
+        if (dataLen % xLen != 0) {
             throw new IllegalArgumentException(
                     String.format(
                             "Invalid data length, cannot create matrix (data len = %d, xLen = %d)",
                             dataLen,
                             xLen));
+        }
         return dataLen / xLen;
     }
 
@@ -90,7 +92,9 @@ public final class MatrixUtil {
      * @return matici z pole dat
      */
     private static <T> T doCreateMatrix(Object data, int xLen) throws IllegalArgumentException {
-        if (!data.getClass().isArray()) throw new IllegalArgumentException(data + " is not an array!");
+        if (!data.getClass().isArray()) {
+            throw new IllegalArgumentException(data + " is not an array!");
+        }
 
         // java :)
         final Object[] arr = (Object[]) data;
