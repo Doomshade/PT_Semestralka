@@ -340,7 +340,7 @@ public class DataSaver implements IDataSaver {
         File[] files = new File[]{
                 createAndWriteData(getStringBuilder(production, dny, tovarny, supermarkety, zbozi), "production"),
                 createAndWriteData(getStringBuilder(overProduction, dny, tovarny, zbozi), "over-production"),
-                createAndWriteData(getStringBuilder(simulationLength, new String[]{"délka-simulace"}), "simulation-length"),
+                createAndWriteData(getStringBuilder(simulationLength, new String[]{"delka-simulace"}), "simulation-length"),
                 createAndWriteData(getStringBuilder(supermarketOverview, dny, supermarkety, zbozi), "supermarket-overview")
         };
         return DATA_FOLDER;
